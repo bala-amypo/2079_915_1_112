@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "users")
@@ -12,15 +13,16 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Column(nullable = false)
     private String username;
 
     @NotBlank
-    @Column(nullable = false)
     private String password;
 
-    public User() {
-    }
+    @Email
+    @Column(unique = true)
+    private String email;
+
+    public User() {}
 
     public Long getId() {
         return id;
@@ -41,8 +43,16 @@ public class User {
     public String getPassword() {
         return password;
     }
-
+ 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+ 
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
