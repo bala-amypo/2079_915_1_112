@@ -1,12 +1,3 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.User;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.service.UserService;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -17,23 +8,19 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // REGISTER USER
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        User savedUser = userService.registerUser(user);
-        return ResponseEntity.ok(savedUser);
+    public User register(@Valid @RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    // LOGIN USER (simple validation)
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User requestUser) {
+    public String login(@Valid @RequestBody User requestUser) {
 
         User dbUser = userService.findByEmail(requestUser.getEmail());
 
         if (!dbUser.getPassword().equals(requestUser.getPassword())) {
-            throw new ResourceNotFoundException("Invalid email or password");
+            throw new RuntimeException("Invalid credentials");
         }
-
-        return ResponseEntity.ok("Login successful");
+        return "Login successful";
     }
 }
