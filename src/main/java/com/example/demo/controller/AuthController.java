@@ -5,6 +5,7 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.UserService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,16 +18,21 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // REGISTER USER
+    // ================= REGISTER =================
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<User> register(
+            @Validated(User.OnRegister.class)
+            @RequestBody User user) {
+
         User savedUser = userService.registerUser(user);
         return ResponseEntity.ok(savedUser);
     }
 
-    // LOGIN USER (simple validation)
+    // ================= LOGIN =================
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User requestUser) {
+    public ResponseEntity<String> login(
+            @Validated(User.OnLogin.class)
+            @RequestBody User requestUser) {
 
         User dbUser = userService.findByEmail(requestUser.getEmail());
 
