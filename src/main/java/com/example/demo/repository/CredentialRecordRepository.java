@@ -7,5 +7,5 @@ import com.example.demo.entity.CredentialRecord;
 public interface CredentialRecordRepository
         extends JpaRepository<CredentialRecord, Long> {
 
-    List<CredentialRecord> findByUserId(Long userId);
+    List<CredentialRecord> findByUser_Id(Long userId);
 }
