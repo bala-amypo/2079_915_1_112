@@ -13,6 +13,7 @@ public class CredentialRecord {
     private Long id;
 
     @NotBlank
+    @Column(nullable = false)
     private String credentialNumber;
 
     @ManyToOne
@@ -25,19 +26,37 @@ public class CredentialRecord {
     @NotNull
     private VerificationRule verificationRule;
 
-    // getters & setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public CredentialRecord() {
+    }
 
-    public String getCredentialNumber() { return credentialNumber; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCredentialNumber() {
+        return credentialNumber;
+    }
+
     public void setCredentialNumber(String credentialNumber) {
         this.credentialNumber = credentialNumber;
     }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public User getUser() {
+        return user;
+    }
 
-    public VerificationRule getVerificationRule() { return verificationRule; }
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public VerificationRule getVerificationRule() {
+        return verificationRule;
+    }
+
     public void setVerificationRule(VerificationRule verificationRule) {
         this.verificationRule = verificationRule;
     }
