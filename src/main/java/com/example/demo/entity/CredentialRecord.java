@@ -1,31 +1,20 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "credential_record")
 public class CredentialRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    private String credentialNumber;
+    private String credentialName;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @NotNull
-    private User user;
+    private LocalDate expiryDate;
 
-    @ManyToOne
-    @JoinColumn(name = "verification_rule_id", nullable = false)
-    @NotNull
-    private VerificationRule verificationRule;
-
-    public CredentialRecord() {}
+    // ---------- getters & setters ----------
 
     public Long getId() {
         return id;
@@ -35,27 +24,19 @@ public class CredentialRecord {
         this.id = id;
     }
 
-    public String getCredentialNumber() {
-        return credentialNumber;
+    public String getCredentialName() {
+        return credentialName;
     }
 
-    public void setCredentialNumber(String credentialNumber) {
-        this.credentialNumber = credentialNumber;
+    public void setCredentialName(String credentialName) {
+        this.credentialName = credentialName;
     }
 
-    public User getUser() {
-        return user;
+    public LocalDate getExpiryDate() {
+        return expiryDate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public VerificationRule getVerificationRule() {
-        return verificationRule;
-    }
-
-    public void setVerificationRule(VerificationRule verificationRule) {
-        this.verificationRule = verificationRule;
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
     }
 }
