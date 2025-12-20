@@ -19,8 +19,8 @@ public class CredentialRecordServiceImpl
     }
 
     @Override
-    public CredentialRecord save(CredentialRecord record) {
-        return repository.save(record);
+    public CredentialRecord createCredential(CredentialRecord credential) {
+        return repository.save(credential);
     }
 
     @Override
