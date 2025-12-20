@@ -13,7 +13,6 @@ public class CredentialRecord {
     private Long id;
 
     @NotBlank
-    @Column(nullable = false)
     private String credentialNumber;
 
     @ManyToOne
@@ -26,8 +25,7 @@ public class CredentialRecord {
     @NotNull
     private VerificationRule verificationRule;
 
-    public CredentialRecord() {
-    }
+    public CredentialRecord() {}
 
     public Long getId() {
         return id;
