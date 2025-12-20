@@ -9,8 +9,7 @@ import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
 
 @Service
-public class CredentialRecordServiceImpl
-        implements CredentialRecordService {
+public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     private final CredentialRecordRepository repository;
 
@@ -19,12 +18,12 @@ public class CredentialRecordServiceImpl
     }
 
     @Override
-    public CredentialRecord createCredential(CredentialRecord credential) {
-        return repository.save(credential);
+    public CredentialRecord createCredential(CredentialRecord record) {
+        return repository.save(record);
     }
 
     @Override
     public List<CredentialRecord> getByUserId(Long userId) {
-        return repository.findByUserId(userId);
+        return repository.findByUser_Id(userId); // ✅ FIXED
     }
 }

@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,11 +13,13 @@ public class CredentialRecord {
 
     private String credentialName;
 
+    private LocalDate expiryDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // ---------- getters & setters ----------
+    // -------- getters & setters --------
 
     public Long getId() {
         return id;
@@ -31,6 +35,14 @@ public class CredentialRecord {
 
     public void setCredentialName(String credentialName) {
         this.credentialName = credentialName;
+    }
+
+    public LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
     }
 
     public User getUser() {
