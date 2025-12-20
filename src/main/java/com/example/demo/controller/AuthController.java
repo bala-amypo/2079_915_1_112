@@ -4,8 +4,9 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.UserService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,21 +19,16 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // ================= REGISTER =================
+    // REGISTER USER (VALIDATION ENABLED)
     @PostMapping("/register")
-    public ResponseEntity<User> register(
-            @Validated(User.OnRegister.class)
-            @RequestBody User user) {
-
+    public ResponseEntity<User> register(@Valid @RequestBody User user) {
         User savedUser = userService.registerUser(user);
         return ResponseEntity.ok(savedUser);
     }
 
-    // ================= LOGIN =================
+    // LOGIN USER
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-            @Validated(User.OnLogin.class)
-            @RequestBody User requestUser) {
+    public ResponseEntity<String> login(@Valid @RequestBody User requestUser) {
 
         User dbUser = userService.findByEmail(requestUser.getEmail());
 
