@@ -1,30 +1,33 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.repository.AuditTrailRecordRepository;
+import com.example.demo.entity.AuditTrail;
+import com.example.demo.repository.AuditTrailRepository;
 import com.example.demo.service.AuditTrailService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
-    private final AuditTrailRecordRepository repository;
+    private final AuditTrailRepository repository;
 
-    public AuditTrailServiceImpl(AuditTrailRecordRepository repository) {
+    public AuditTrailServiceImpl(AuditTrailRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public AuditTrailRecord save(AuditTrailRecord record) {
-        // createdAt is auto-set by @PrePersist
-        return repository.save(record);
+    public List<AuditTrail> getLogsByCredential(Long credentialId) {
+        return repository.findByCredentialId(credentialId);
     }
 
     @Override
-    public List<AuditTrailRecord> getAll() {
+    public List<AuditTrail> getAllLogs() {
         return repository.findAll();
+    }
+
+    @Override
+    public AuditTrail save(AuditTrail auditTrail) {
+        return repository.save(auditTrail);
     }
 }
