@@ -25,7 +25,6 @@ public class AuthController {
         return ResponseEntity.ok(savedUser);
     }
 
-    // LOGIN USER
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody User requestUser) {
 
