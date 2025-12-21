@@ -1,28 +1,30 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "audit_trail_record")
+@Table(name = "audit_trail")
 public class AuditTrailRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Credential ID is required")
     private Long credentialId;
 
+    @NotBlank(message = "Action is required")
     private String action;
 
-    private LocalDateTime createdAt;
+    @NotNull
+    private LocalDateTime loggedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+    // ===== GETTERS & SETTERS =====
 
-    // getters & setters
     public Long getId() {
         return id;
     }
@@ -47,7 +49,11 @@ public class AuditTrailRecord {
         this.action = action;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
+    }
+
+    public void setLoggedAt(LocalDateTime loggedAt) {
+        this.loggedAt = loggedAt;
     }
 }
