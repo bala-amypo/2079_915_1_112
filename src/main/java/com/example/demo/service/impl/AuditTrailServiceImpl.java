@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class AuditTrailServiceImpl
-        implements AuditTrailService {
+public class AuditTrailServiceImpl implements AuditTrailService {
 
     private final AuditTrailRecordRepository repository;
 
