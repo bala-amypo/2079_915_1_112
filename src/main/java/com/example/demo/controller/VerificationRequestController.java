@@ -2,31 +2,54 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.VerificationRequest;
 import com.example.demo.service.VerificationRequestService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/verifications")
+@RequestMapping("/api/verification")
 public class VerificationRequestController {
 
     private final VerificationRequestService service;
 
-    public VerificationRequestController(
-            VerificationRequestService service) {
+    public VerificationRequestController(VerificationRequestService service) {
         this.service = service;
     }
 
+    // 1. POST / - Initiate verification
     @PostMapping
     public ResponseEntity<VerificationRequest> initiate(
-            @RequestBody VerificationRequest request) {
-        return ResponseEntity.ok(
-                service.initiateVerification(request));
+            @Valid @RequestBody VerificationRequest request) {
+        return ResponseEntity.ok(service.initiateVerification(request));
     }
 
-    @PostMapping("/{id}/process")
+    // 2. PUT /{id}/process - Process verification
+    @PutMapping("/{id}/process")
     public ResponseEntity<VerificationRequest> process(
             @PathVariable Long id) {
+        return ResponseEntity.ok(service.processVerification(id));
+    }
+
+    // 3. GET /credential/{credentialId}
+    @GetMapping("/credential/{credentialId}")
+    public ResponseEntity<List<VerificationRequest>> getByCredential(
+            @PathVariable Long credentialId) {
         return ResponseEntity.ok(
-                service.processVerification(id));
+                service.getRequestsByCredential(credentialId));
+    }
+
+    // 4. GET /{id}
+    @GetMapping("/{id}")
+    public ResponseEntity<VerificationRequest> getById(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(service.getById(id));
+    }
+
+    // 5. GET /
+    @GetMapping
+    public ResponseEntity<List<VerificationRequest>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
