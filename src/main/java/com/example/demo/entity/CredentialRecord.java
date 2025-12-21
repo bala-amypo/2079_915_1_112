@@ -26,7 +26,6 @@ public class CredentialRecord {
     @NotNull(message = "User is required")
     private User user;
 
-    // getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -9,7 +9,6 @@ public class AuditTrailRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long credentialId;
     private LocalDateTime loggedAt;
 
