@@ -7,6 +7,7 @@ import com.example.demo.service.VerificationRequestService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class VerificationRequestServiceImpl
@@ -14,38 +15,37 @@ public class VerificationRequestServiceImpl
 
     private final VerificationRequestRepository requestRepo;
     private final CredentialRecordRepository credentialRepo;
-    private final VerificationRuleRepository ruleRepo;
     private final AuditTrailRecordRepository auditRepo;
 
     public VerificationRequestServiceImpl(
             VerificationRequestRepository requestRepo,
             CredentialRecordRepository credentialRepo,
-            VerificationRuleRepository ruleRepo,
             AuditTrailRecordRepository auditRepo) {
         this.requestRepo = requestRepo;
         this.credentialRepo = credentialRepo;
-        this.ruleRepo = ruleRepo;
         this.auditRepo = auditRepo;
     }
 
+    // POST
     @Override
     public VerificationRequest initiateVerification(
             VerificationRequest request) {
+        request.setStatus("PENDING");
         return requestRepo.save(request);
     }
 
+    // PUT /process
     @Override
-    public VerificationRequest processVerification(
-            Long requestId) {
+    public VerificationRequest processVerification(Long requestId) {
 
         VerificationRequest request = requestRepo.findById(requestId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Request not found"));
+                        new ResourceNotFoundException("Verification request not found"));
 
-        CredentialRecord credential =
-                credentialRepo.findById(request.getCredentialId())
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("Credential not found"));
+        CredentialRecord credential = credentialRepo
+                .findById(request.getCredentialId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Credential not found"));
 
         if (credential.getExpiryDate() != null &&
                 credential.getExpiryDate().isBefore(LocalDate.now())) {
@@ -56,14 +56,30 @@ public class VerificationRequestServiceImpl
 
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setCredentialId(credential.getId());
+        audit.setAction("VERIFICATION_PROCESSED");
         auditRepo.save(audit);
 
         return requestRepo.save(request);
     }
 
+    // GET by credential
     @Override
-    public java.util.List<VerificationRequest> getRequestsByCredential(
+    public List<VerificationRequest> getRequestsByCredential(
             Long credentialId) {
         return requestRepo.findByCredentialId(credentialId);
+    }
+
+    // GET by ID
+    @Override
+    public VerificationRequest getById(Long id) {
+        return requestRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Verification request not found"));
+    }
+
+    // GET all
+    @Override
+    public List<VerificationRequest> getAll() {
+        return requestRepo.findAll();
     }
 }

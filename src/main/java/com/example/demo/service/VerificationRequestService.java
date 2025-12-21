@@ -4,7 +4,14 @@ import com.example.demo.entity.VerificationRequest;
 import java.util.List;
 
 public interface VerificationRequestService {
+
     VerificationRequest initiateVerification(VerificationRequest request);
+
     VerificationRequest processVerification(Long requestId);
+
     List<VerificationRequest> getRequestsByCredential(Long credentialId);
+
+    VerificationRequest getById(Long id);
+
+    List<VerificationRequest> getAll();
 }
