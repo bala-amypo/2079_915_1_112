@@ -17,7 +17,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    // REGISTER USER
     @Override
     public User registerUser(User user) {
 
@@ -28,7 +27,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    // FIND USER BY EMAIL
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
