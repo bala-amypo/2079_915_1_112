@@ -12,16 +12,11 @@ public class VerificationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(nullable = false)
+    @NotBlank(message = "Rule code cannot be empty")
     private String ruleCode;
 
-    @NotNull
-    @Column(nullable = false)
+    @NotNull(message = "Active is required")
     private Boolean active;
-
-    public VerificationRule() {
-    }
 
     public Long getId() {
         return id;
