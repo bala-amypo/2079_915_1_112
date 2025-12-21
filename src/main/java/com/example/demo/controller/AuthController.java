@@ -19,7 +19,6 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // REGISTER USER (VALIDATION ENABLED)
     @PostMapping("/register")
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         User savedUser = userService.registerUser(user);
