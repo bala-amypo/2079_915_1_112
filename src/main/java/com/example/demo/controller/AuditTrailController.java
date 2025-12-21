@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.service.AuditTrailService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +17,21 @@ public class AuditTrailController {
         this.service = service;
     }
 
+    // POST /audit → Log audit event
     @PostMapping
-    public AuditTrailRecord create(@RequestBody AuditTrailRecord record) {
-        return service.save(record);
+    public AuditTrailRecord logEvent(
+            @Valid @RequestBody AuditTrailRecord record) {
+        return service.logEvent(record);
     }
 
+    // GET /audit/credential/{credentialId}
+    @GetMapping("/credential/{credentialId}")
+    public List<AuditTrailRecord> getByCredential(
+            @PathVariable Long credentialId) {
+        return service.getByCredentialId(credentialId);
+    }
+
+    // GET /audit → List all logs
     @GetMapping
     public List<AuditTrailRecord> getAll() {
         return service.getAll();

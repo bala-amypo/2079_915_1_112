@@ -5,6 +5,7 @@ import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.service.AuditTrailService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,8 +18,14 @@ public class AuditTrailServiceImpl implements AuditTrailService {
     }
 
     @Override
-    public AuditTrailRecord save(AuditTrailRecord record) {
+    public AuditTrailRecord logEvent(AuditTrailRecord record) {
+        record.setLoggedAt(LocalDateTime.now());
         return repository.save(record);
+    }
+
+    @Override
+    public List<AuditTrailRecord> getByCredentialId(Long credentialId) {
+        return repository.findByCredentialId(credentialId);
     }
 
     @Override
