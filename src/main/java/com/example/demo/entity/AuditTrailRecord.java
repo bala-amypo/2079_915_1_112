@@ -4,16 +4,25 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "audit_trail_record")
 public class AuditTrailRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long credentialId;
-    private LocalDateTime loggedAt;
 
-    public AuditTrailRecord() {}
+    private String action;
 
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // getters & setters
     public Long getId() {
         return id;
     }
@@ -30,11 +39,15 @@ public class AuditTrailRecord {
         this.credentialId = credentialId;
     }
 
-    public LocalDateTime getLoggedAt() {
-        return loggedAt;
+    public String getAction() {
+        return action;
     }
 
-    public void setLoggedAt(LocalDateTime loggedAt) {
-        this.loggedAt = loggedAt;
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

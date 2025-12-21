@@ -13,21 +13,18 @@ public class AuditTrailServiceImpl implements AuditTrailService {
 
     private final AuditTrailRecordRepository repository;
 
-    public AuditTrailServiceImpl(
-            AuditTrailRecordRepository repository) {
+    public AuditTrailServiceImpl(AuditTrailRecordRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public AuditTrailRecord logEvent(AuditTrailRecord record) {
-        if (record.getLoggedAt() == null) {
-            record.setLoggedAt(LocalDateTime.now());
-        }
+    public AuditTrailRecord save(AuditTrailRecord record) {
+        // createdAt is auto-set by @PrePersist
         return repository.save(record);
     }
 
     @Override
-    public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
-        return repository.findByCredentialId(credentialId);
+    public List<AuditTrailRecord> getAll() {
+        return repository.findAll();
     }
 }

@@ -3,16 +3,20 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "verification_request")
 public class VerificationRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long credentialId;
+
+    private Long ruleId;
+
     private String status;
 
-    public VerificationRequest() {}
-
+    // getters & setters
     public Long getId() {
         return id;
     }
@@ -29,10 +33,18 @@ public class VerificationRequest {
         this.credentialId = credentialId;
     }
 
+    public Long getRuleId() {
+        return ruleId;
+    }
+
+    public void setRuleId(Long ruleId) {
+        this.ruleId = ruleId;
+    }
+
     public String getStatus() {
         return status;
     }
-    
+
     public void setStatus(String status) {
         this.status = status;
     }
