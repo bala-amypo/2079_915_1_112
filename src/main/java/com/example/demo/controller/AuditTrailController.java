@@ -29,7 +29,6 @@ public class AuditTrailController {
         return service.getByCredentialId(credentialId);
     }
 
-    // GET /audit → List all logs
     @GetMapping
     public List<AuditTrailRecord> getAll() {
         return service.getAll();

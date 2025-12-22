@@ -18,14 +18,12 @@ public class CredentialRecordController {
         this.service = service;
     }
 
-    // POST / - Create credential
     @PostMapping
     public CredentialRecord create(
             @Valid @RequestBody CredentialRecord record) {
         return service.createCredential(record);
     }
 
-    // PUT /{id} - Update credential
     @PutMapping("/{id}")
     public CredentialRecord update(
             @PathVariable Long id,
@@ -33,7 +31,6 @@ public class CredentialRecordController {
         return service.updateCredential(id, record);
     }
 
-    // GET /holder/{holderId}
     @GetMapping("/holder/{holderId}")
     public List<CredentialRecord> getByHolder(
             @PathVariable Long holderId) {
