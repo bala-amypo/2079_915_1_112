@@ -17,14 +17,12 @@ public class AuditTrailController {
         this.service = service;
     }
 
-    // POST /audit → Log audit event
     @PostMapping
     public AuditTrailRecord logEvent(
             @Valid @RequestBody AuditTrailRecord record) {
         return service.logEvent(record);
     }
 
-    // GET /audit/credential/{credentialId}
     @GetMapping("/credential/{credentialId}")
     public List<AuditTrailRecord> getByCredential(
             @PathVariable Long credentialId) {
