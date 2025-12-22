@@ -37,14 +37,12 @@ public class CredentialRecordController {
         return service.getByUserId(holderId);
     }
 
-    // GET /code/{credentialCode}
     @GetMapping("/code/{credentialCode}")
     public CredentialRecord getByCode(
             @PathVariable String credentialCode) {
         return service.getByCredentialCode(credentialCode);
     }
 
-    // GET / - List all credentials
     @GetMapping
     public List<CredentialRecord> getAll() {
         return service.getAllCredentials();
