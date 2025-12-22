@@ -33,8 +33,6 @@ public class CredentialRecord {
     @NotNull(message = "User is required")
     private User user;
 
-    // ===== GETTERS & SETTERS =====
-
     public Long getId() {
         return id;
     }

@@ -26,7 +26,6 @@ public class VerificationRequestServiceImpl
         this.auditRepo = auditRepo;
     }
 
-    // POST
     @Override
     public VerificationRequest initiateVerification(
             VerificationRequest request) {
@@ -34,7 +33,6 @@ public class VerificationRequestServiceImpl
         return requestRepo.save(request);
     }
 
-    // PUT /process
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
@@ -62,14 +60,12 @@ public class VerificationRequestServiceImpl
         return requestRepo.save(request);
     }
 
-    // GET by credential
     @Override
     public List<VerificationRequest> getRequestsByCredential(
             Long credentialId) {
         return requestRepo.findByCredentialId(credentialId);
     }
 
-    // GET by ID
     @Override
     public VerificationRequest getById(Long id) {
         return requestRepo.findById(id)
@@ -77,7 +73,6 @@ public class VerificationRequestServiceImpl
                         new ResourceNotFoundException("Verification request not found"));
     }
 
-    // GET all
     @Override
     public List<VerificationRequest> getAll() {
         return requestRepo.findAll();

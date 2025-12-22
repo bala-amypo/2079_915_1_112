@@ -15,8 +15,6 @@ public class VerificationRequest {
     private Long ruleId;
 
     private String status;
-
-    // getters & setters
     public Long getId() {
         return id;
     }
