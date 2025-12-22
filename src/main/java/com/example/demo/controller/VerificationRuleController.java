@@ -19,27 +19,23 @@ public class VerificationRuleController {
         this.service = service;
     }
 
-    // CREATE
     @PostMapping
     public ResponseEntity<VerificationRule> create(
             @Valid @RequestBody VerificationRule rule) {
         return ResponseEntity.ok(service.createRule(rule));
     }
 
-    // READ BY ID
     @GetMapping("/{id}")
     public ResponseEntity<VerificationRule> getById(
             @PathVariable Long id) {
         return ResponseEntity.ok(service.getRuleById(id));
     }
 
-    // READ ALL
     @GetMapping
     public ResponseEntity<List<VerificationRule>> getAll() {
         return ResponseEntity.ok(service.getAllRules());
     }
 
-    // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<VerificationRule> update(
             @PathVariable Long id,
@@ -47,7 +43,6 @@ public class VerificationRuleController {
         return ResponseEntity.ok(service.updateRule(id, rule));
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(
             @PathVariable Long id) {

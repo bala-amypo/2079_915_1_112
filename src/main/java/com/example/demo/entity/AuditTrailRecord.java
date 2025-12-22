@@ -23,8 +23,6 @@ public class AuditTrailRecord {
     @NotNull
     private LocalDateTime loggedAt;
 
-    // ===== GETTERS & SETTERS =====
-
     public Long getId() {
         return id;
     }
