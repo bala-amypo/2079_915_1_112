@@ -7,7 +7,7 @@ import com.example.demo.entity.CredentialRecord;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
-
+@Service
 public class CredentialRecordServiceImpl
         implements CredentialRecordService {
 

@@ -9,7 +9,7 @@ import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.AuditTrailService;
 import com.example.demo.service.CredentialRecordService;
 import com.example.demo.service.VerificationRequestService;
-
+@Service
 public class VerificationRequestServiceImpl
         implements VerificationRequestService {
 
