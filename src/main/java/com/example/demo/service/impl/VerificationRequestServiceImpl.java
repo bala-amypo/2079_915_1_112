@@ -12,7 +12,6 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.AuditTrailService;
-import com.example.demo.service.CredentialRecordService;
 import com.example.demo.service.VerificationRequestService;
 
 @Service
@@ -22,7 +21,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     private final CredentialRecordRepository credentialRepository;
     private final AuditTrailService auditService;
 
-    // ✅ CONSTRUCTOR USED BY SPRING
+    // ✅ CONSTRUCTOR EXPECTED BY TEST CASES
     public VerificationRequestServiceImpl(
             VerificationRequestRepository requestRepository,
             CredentialRecordRepository credentialRepository,
@@ -30,19 +29,6 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
 
         this.requestRepository = requestRepository;
         this.credentialRepository = credentialRepository;
-        this.auditService = auditService;
-    }
-
-    // ✅ CONSTRUCTOR REQUIRED BY TESTS
-    public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepository,
-            CredentialRecordService credentialService,
-            Object verificationRuleService, // tests don’t use it
-            AuditTrailService auditService) {
-
-        this.requestRepository = requestRepository;
-        this.credentialRepository =
-                ((CredentialRecordServiceImpl) credentialService).getRepository();
         this.auditService = auditService;
     }
 
@@ -55,34 +41,24 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
-        VerificationRequest request =
-                requestRepository.findById(requestId)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("Request not found"));
+        VerificationRequest request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Verification request not found"));
 
-        CredentialRecord credential =
-                credentialRepository.findById(request.getCredentialId())
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("Credential not found"));
+        CredentialRecord credential = credentialRepository.findById(request.getCredentialId())
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
 
-        // ✅ EXPIRED CASE (test expects FAILED)
+        // ✅ EXPIRY CHECK (TEST t62)
         if (credential.getExpiryDate() != null &&
-                credential.getExpiryDate().isBefore(LocalDate.now())) {
+            credential.getExpiryDate().isBefore(LocalDate.now())) {
 
             request.setStatus("FAILED");
-
-            AuditTrailRecord audit = new AuditTrailRecord();
-            audit.setCredentialId(credential.getId());
-            auditService.logEvent(audit);
-
-            return requestRepository.save(request);
+        } else {
+            request.setStatus("SUCCESS");
         }
-
-        // ✅ SUCCESS CASE
-        request.setStatus("SUCCESS");
 
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setCredentialId(credential.getId());
+        audit.setAction("VERIFICATION_" + request.getStatus());
         auditService.logEvent(audit);
 
         return requestRepository.save(request);
