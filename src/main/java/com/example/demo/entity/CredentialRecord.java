@@ -14,14 +14,17 @@ public class CredentialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ REQUIRED by repository findByHolderId(...)
+    // ✅ Required for findByHolderId(...)
     private Long holderId;
 
     private String credentialCode;
     private String title;
     private String issuer;
-    private String status;
 
+    // ✅ REQUIRED for searchByIssuerAndType(...)
+    private String credentialType;
+
+    private String status;
     private LocalDate expiryDate;
 
     @ManyToMany
@@ -32,9 +35,8 @@ public class CredentialRecord {
     )
     private Set<VerificationRule> rules = new HashSet<>();
 
-    // ✅ REQUIRED no-arg constructor
-    public CredentialRecord() {
-    }
+    // ✅ Mandatory no-arg constructor
+    public CredentialRecord() {}
 
     public Long getId() {
         return id;
@@ -44,7 +46,6 @@ public class CredentialRecord {
         this.id = id;
     }
 
-    // ✅ REQUIRED getter/setter
     public Long getHolderId() {
         return holderId;
     }
@@ -77,6 +78,15 @@ public class CredentialRecord {
         this.issuer = issuer;
     }
 
+    // ✅ THIS WAS MISSING
+    public String getCredentialType() {
+        return credentialType;
+    }
+
+    public void setCredentialType(String credentialType) {
+        this.credentialType = credentialType;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -93,7 +103,7 @@ public class CredentialRecord {
         this.expiryDate = expiryDate;
     }
 
-    // ✅ IMPORTANT: never return null (fixes earlier test failures)
+    // ✅ Never return null (prevents test failures)
     public Set<VerificationRule> getRules() {
         return rules;
     }
