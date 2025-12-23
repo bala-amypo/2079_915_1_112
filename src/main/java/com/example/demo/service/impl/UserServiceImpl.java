@@ -13,18 +13,15 @@ import com.example.demo.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    // ✅ REQUIRED default constructor (for Spring)
-    public UserServiceImpl() {
-    }
-
-    // ✅ Constructor injection (used by Spring & tests)
+    // ✅ REQUIRED constructor for Spring
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    // ================= REGISTER =================
     @Override
     public User registerUser(User user) {
 
@@ -35,6 +32,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    // ================= LOGIN =================
     @Override
     public User loginUser(String email, String password) {
 
@@ -48,18 +46,21 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    // ================= FIND BY EMAIL =================
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    // ================= FIND BY ID =================
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    // ================= FIND ALL =================
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
