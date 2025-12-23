@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.example.demo.security.JwtUtil;
+
 @Configuration
 public class SecurityConfig {
 
@@ -24,5 +26,11 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    // ✅ ADD THIS METHOD
+    @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil();
     }
 }
