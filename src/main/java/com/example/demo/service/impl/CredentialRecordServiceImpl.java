@@ -19,57 +19,32 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord createCredential(CredentialRecord record) {
+    public CredentialRecord create(CredentialRecord record) {
         return repository.save(record);
-    }
-
-    @Override
-    public CredentialRecord getCredentialById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
     }
 
     @Override
     public CredentialRecord getCredentialByCode(String code) {
         return repository.findByCredentialCode(code)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
     }
 
     @Override
-    public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
+    public List<CredentialRecord> getByHolderId(Long holderId) {
         return repository.findByHolderId(holderId);
     }
 
     @Override
-    public List<CredentialRecord> getAllCredentials() {
-        return repository.findAll();
+    public CredentialRecord getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
     }
 
     @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-
-        CredentialRecord existing = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
-
-        // ✅ USE ONLY FIELDS THAT ACTUALLY EXIST
-        existing.setCredentialCode(updated.getCredentialCode());
+    public CredentialRecord update(Long id, CredentialRecord updated) {
+        CredentialRecord existing = getById(id);
+        existing.setStatus(updated.getStatus());
         existing.setExpiryDate(updated.getExpiryDate());
-        existing.setIssuer(updated.getIssuer());
-        existing.setMetadataJson(updated.getMetadataJson());
-
         return repository.save(existing);
-    }
-
-    @Override
-    public void deleteCredential(Long id) {
-
-        CredentialRecord existing = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
-
-        repository.delete(existing);
     }
 }

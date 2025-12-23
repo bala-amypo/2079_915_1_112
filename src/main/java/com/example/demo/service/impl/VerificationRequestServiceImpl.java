@@ -1,6 +1,6 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,6 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     private final CredentialRecordRepository credentialRepo;
     private final AuditTrailService auditService;
 
-    // ✅ EXACT constructor expected by tests
     public VerificationRequestServiceImpl(
             VerificationRequestRepository verificationRepo,
             CredentialRecordRepository credentialRepo,
@@ -33,8 +32,9 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         return verificationRepo.save(request);
     }
 
+    // ✅ MISSING METHOD (CAUSE OF ERROR)
     @Override
-    public void processExpiredCredentials() {
-        credentialRepo.findExpiredBefore(LocalDate.now());
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return verificationRepo.findByCredentialId(credentialId);
     }
 }
