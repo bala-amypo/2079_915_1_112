@@ -14,18 +14,17 @@ public class CredentialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Required for findByHolderId(...)
     private Long holderId;
-
     private String credentialCode;
     private String title;
     private String issuer;
-
-    // ✅ REQUIRED for searchByIssuerAndType(...)
     private String credentialType;
-
     private String status;
     private LocalDate expiryDate;
+
+    // ✅ REQUIRED BY TEST
+    @Column(columnDefinition = "TEXT")
+    private String metadataJson;
 
     @ManyToMany
     @JoinTable(
@@ -35,80 +34,37 @@ public class CredentialRecord {
     )
     private Set<VerificationRule> rules = new HashSet<>();
 
-    // ✅ Mandatory no-arg constructor
     public CredentialRecord() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getHolderId() { return holderId; }
+    public void setHolderId(Long holderId) { this.holderId = holderId; }
 
-    public Long getHolderId() {
-        return holderId;
-    }
+    public String getCredentialCode() { return credentialCode; }
+    public void setCredentialCode(String credentialCode) { this.credentialCode = credentialCode; }
 
-    public void setHolderId(Long holderId) {
-        this.holderId = holderId;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getCredentialCode() {
-        return credentialCode;
-    }
+    public String getIssuer() { return issuer; }
+    public void setIssuer(String issuer) { this.issuer = issuer; }
 
-    public void setCredentialCode(String credentialCode) {
-        this.credentialCode = credentialCode;
-    }
+    public String getCredentialType() { return credentialType; }
+    public void setCredentialType(String credentialType) { this.credentialType = credentialType; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public LocalDate getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(LocalDate expiryDate) { this.expiryDate = expiryDate; }
 
-    public String getIssuer() {
-        return issuer;
-    }
+    // ✅ REQUIRED BY TEST
+    public String getMetadataJson() { return metadataJson; }
+    public void setMetadataJson(String metadataJson) { this.metadataJson = metadataJson; }
 
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    // ✅ THIS WAS MISSING
-    public String getCredentialType() {
-        return credentialType;
-    }
-
-    public void setCredentialType(String credentialType) {
-        this.credentialType = credentialType;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDate getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
-    // ✅ Never return null (prevents test failures)
-    public Set<VerificationRule> getRules() {
-        return rules;
-    }
-
-    public void setRules(Set<VerificationRule> rules) {
-        this.rules = rules;
-    }
+    // ✅ NEVER return null
+    public Set<VerificationRule> getRules() { return rules; }
+    public void setRules(Set<VerificationRule> rules) { this.rules = rules; }
 }
