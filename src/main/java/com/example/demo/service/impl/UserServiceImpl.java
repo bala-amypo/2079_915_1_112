@@ -18,18 +18,25 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    // ✅ REQUIRED BY INTERFACE
+    // ✅ REQUIRED
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // ✅ REQUIRED BY INTERFACE (THIS WAS MISSING)
+    // ✅ REQUIRED
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
+    }
+
+    // ✅ REQUIRED (THIS WAS MISSING)
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElse(null);
     }
 
     @Override

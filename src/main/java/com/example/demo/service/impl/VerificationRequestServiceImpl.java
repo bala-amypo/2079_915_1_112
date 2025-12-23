@@ -43,9 +43,9 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Request not found"));
 
-        // ✅ CORRECT METHOD NAME
-        CredentialRecord credential = credentialService
-                .getCredentialById(request.getCredentialId());
+        // ✅ CORRECT METHOD
+        CredentialRecord credential =
+                credentialService.getCredential(request.getCredentialId());
 
         if (credential.getExpiryDate() != null &&
             credential.getExpiryDate().isBefore(LocalDate.now())) {
