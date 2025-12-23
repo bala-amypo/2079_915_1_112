@@ -1,9 +1,10 @@
 package com.example.demo.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 
@@ -16,26 +17,29 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    // ✅ REQUIRED FOR t50
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // ✅ FIX duplicate email test
     @Override
     public User registerUser(User user) {
 
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("User already exists");
         }
 
         return userRepository.save(user);
     }
 
-    // ✅ REQUIRED FOR t52 & t56
+    // ✅ FIX login tests
     @Override
     public User loginUser(String email, String password) {
 
-        User user = userRepository.findByEmail(email);
-
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid credentials");
