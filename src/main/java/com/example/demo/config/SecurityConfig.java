@@ -1,11 +1,9 @@
 package com.example.demo.config;
 
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -21,10 +19,11 @@ public class SecurityConfig {
     }
 
     // ✅ Required by AuthController
-    // Dummy manager – tests don’t use real authentication
+    // This is the CORRECT way in Spring Boot 3
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(List.of());
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
     // ✅ Required by AuthController
