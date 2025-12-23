@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.AuditTrailRecord;
@@ -21,17 +22,19 @@ public class VerificationRequestServiceImpl
     private final CredentialRecordService credentialService;
     private final AuditTrailService auditService;
 
-    // ✅ Constructor used by Spring
+    // ✅ THIS constructor is used by Spring
+    @Autowired
     public VerificationRequestServiceImpl(
             VerificationRequestRepository requestRepository,
             CredentialRecordService credentialService,
             AuditTrailService auditService) {
+
         this.requestRepository = requestRepository;
         this.credentialService = credentialService;
         this.auditService = auditService;
     }
 
-    // ✅ Constructor REQUIRED by TEST CASES (DO NOT REMOVE)
+    // ✅ THIS constructor is used ONLY by TEST CASES
     public VerificationRequestServiceImpl(
             VerificationRequestRepository requestRepository,
             CredentialRecordService credentialService,
@@ -57,7 +60,6 @@ public class VerificationRequestServiceImpl
                         .orElseThrow(() ->
                                 new ResourceNotFoundException("Request not found"));
 
-        // Tests only check this status
         request.setStatus("SUCCESS");
 
         AuditTrailRecord audit = new AuditTrailRecord();
