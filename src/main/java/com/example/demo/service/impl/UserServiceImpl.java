@@ -18,40 +18,17 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    // ✅ REQUIRED
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    // ✅ REQUIRED
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
-    }
-
-    // ✅ REQUIRED (THIS WAS MISSING)
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElse(null);
-    }
-
+    // ✅ REQUIRED BY INTERFACE
     @Override
     public User registerUser(User user) {
-
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("User already exists");
+            throw new RuntimeException("Email already exists");
         }
-
         return userRepository.save(user);
     }
 
-    @Override
+    // ❌ DO NOT USE @Override (not in interface)
     public User loginUser(String email, String password) {
-
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
@@ -59,7 +36,28 @@ public class UserServiceImpl implements UserService {
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid credentials");
         }
-
         return user;
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

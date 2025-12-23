@@ -17,53 +17,65 @@ import com.example.demo.service.VerificationRequestService;
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private final VerificationRequestRepository repository;
+    private final VerificationRequestRepository requestRepository;
     private final CredentialRecordService credentialService;
     private final AuditTrailService auditService;
 
+    // ✅ CONSTRUCTOR MATCHES TEST CASE
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository repository,
+            VerificationRequestRepository requestRepository,
             CredentialRecordService credentialService,
             AuditTrailService auditService) {
 
-        this.repository = repository;
+        this.requestRepository = requestRepository;
         this.credentialService = credentialService;
         this.auditService = auditService;
     }
 
+    // ✅ REQUIRED
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-        return repository.save(request);
+        request.setStatus("PENDING");
+        return requestRepository.save(request);
     }
 
+    // ✅ REQUIRED
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
-        VerificationRequest request = repository.findById(requestId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Request not found"));
+        VerificationRequest request =
+                requestRepository.findById(requestId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Request not found"));
 
-        // ✅ CORRECT METHOD
         CredentialRecord credential =
-                credentialService.getCredential(request.getCredentialId());
+                credentialService.getCredentialRecord(request.getCredentialId());
 
+        // ✅ HANDLE EXPIRY TEST
         if (credential.getExpiryDate() != null &&
-            credential.getExpiryDate().isBefore(LocalDate.now())) {
+                credential.getExpiryDate().isBefore(LocalDate.now())) {
 
             request.setStatus("FAILED");
-        } else {
-            request.setStatus("SUCCESS");
+
+            AuditTrailRecord audit = new AuditTrailRecord();
+            audit.setCredentialId(credential.getId());
+            auditService.logEvent(audit);
+
+            return requestRepository.save(request);
         }
 
+        request.setStatus("SUCCESS");
+
         AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setCredentialId(request.getCredentialId());
+        audit.setCredentialId(credential.getId());
         auditService.logEvent(audit);
 
-        return repository.save(request);
+        return requestRepository.save(request);
     }
 
+    // ✅ REQUIRED
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return repository.findByCredentialId(credentialId);
+        return requestRepository.findByCredentialId(credentialId);
     }
 }
