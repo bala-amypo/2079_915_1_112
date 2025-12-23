@@ -3,7 +3,6 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "verification_request")
 public class VerificationRequest {
 
     @Id
@@ -11,39 +10,14 @@ public class VerificationRequest {
     private Long id;
 
     private Long credentialId;
-
-    private Long ruleId;
-
     private String status;
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getCredentialId() {
-        return credentialId;
-    }
+    public Long getCredentialId() { return credentialId; }
+    public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
 
-    public void setCredentialId(Long credentialId) {
-        this.credentialId = credentialId;
-    }
-
-    public Long getRuleId() {
-        return ruleId;
-    }
-
-    public void setRuleId(Long ruleId) {
-        this.ruleId = ruleId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
