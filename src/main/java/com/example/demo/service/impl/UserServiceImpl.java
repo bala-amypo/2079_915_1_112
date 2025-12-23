@@ -2,7 +2,7 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
@@ -13,18 +13,16 @@ import com.example.demo.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
 
-    // ✅ CONSTRUCTOR USED BY SPRING
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    // ✅ REQUIRED default constructor (for Spring)
+    public UserServiceImpl() {
     }
 
-    // ✅ CONSTRUCTOR REQUIRED BY TESTS
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    // ✅ Constructor injection (used by Spring & tests)
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -34,25 +32,32 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Email already exists");
         }
 
-        if (passwordEncoder != null) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User loginUser(String email, String password) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!user.getPassword().equals(password)) {
+            throw new ResourceNotFoundException("Invalid credentials");
         }
 
-        return userRepository.save(user);
+        return user;
     }
 
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
