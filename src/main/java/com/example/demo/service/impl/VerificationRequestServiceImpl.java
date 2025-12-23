@@ -36,7 +36,6 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         return repository.save(request);
     }
 
-    // ✅ FIX expired credential test
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
@@ -44,10 +43,9 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Request not found"));
 
+        // ✅ CORRECT METHOD NAME
         CredentialRecord credential = credentialService
-                .findById(request.getCredentialId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
+                .getCredentialById(request.getCredentialId());
 
         if (credential.getExpiryDate() != null &&
             credential.getExpiryDate().isBefore(LocalDate.now())) {
