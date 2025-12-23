@@ -4,9 +4,7 @@ import com.example.demo.entity.CredentialHolderProfile;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialHolderProfileRepository;
 import com.example.demo.service.CredentialHolderProfileService;
-import org.springframework.stereotype.Service;
 
-@Service
 public class CredentialHolderProfileServiceImpl
         implements CredentialHolderProfileService {
 
@@ -18,8 +16,7 @@ public class CredentialHolderProfileServiceImpl
     }
 
     @Override
-    public CredentialHolderProfile createHolder(
-            CredentialHolderProfile profile) {
+    public CredentialHolderProfile createHolder(CredentialHolderProfile profile) {
         return repository.save(profile);
     }
 
@@ -31,8 +28,7 @@ public class CredentialHolderProfileServiceImpl
     }
 
     @Override
-    public CredentialHolderProfile updateStatus(
-            Long id, boolean active) {
+    public CredentialHolderProfile updateStatus(Long id, boolean active) {
         CredentialHolderProfile profile = getHolderById(id);
         profile.setActive(active);
         return repository.save(profile);
