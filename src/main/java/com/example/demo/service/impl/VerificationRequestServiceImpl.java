@@ -1,10 +1,12 @@
 package com.example.demo.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.entity.CredentialRecord;
 import com.example.demo.entity.VerificationRequest;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.VerificationRequestRepository;
@@ -15,71 +17,54 @@ import com.example.demo.service.VerificationRequestService;
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private VerificationRequestRepository requestRepository;
-    private CredentialRecordService credentialService;
-    private AuditTrailService auditService;
+    private final VerificationRequestRepository repository;
+    private final CredentialRecordService credentialService;
+    private final AuditTrailService auditService;
 
-    // ✅ REQUIRED BY SPRING
-    public VerificationRequestServiceImpl() {
-    }
-
-    // ✅ REQUIRED BY SPRING AUTOWIRING
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepository,
+            VerificationRequestRepository repository,
             CredentialRecordService credentialService,
             AuditTrailService auditService) {
 
-        this.requestRepository = requestRepository;
+        this.repository = repository;
         this.credentialService = credentialService;
         this.auditService = auditService;
     }
 
-    // ✅ REQUIRED BY TEST CASE (VERY IMPORTANT)
-    public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepository,
-            CredentialRecordService credentialService,
-            Object verificationRuleService,   // NOT USED, but REQUIRED
-            AuditTrailService auditService) {
-
-        this.requestRepository = requestRepository;
-        this.credentialService = credentialService;
-        this.auditService = auditService;
-    }
-
-    // =====================================================
-    // CREATE REQUEST
-    // =====================================================
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-        request.setStatus("PENDING");
-        return requestRepository.save(request);
+        return repository.save(request);
     }
 
-    // =====================================================
-    // PROCESS VERIFICATION
-    // =====================================================
+    // ✅ FIXES t62_processVerification_expired
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
-        VerificationRequest request = requestRepository.findById(requestId)
+        VerificationRequest request = repository.findById(requestId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Verification request not found"));
+                        new ResourceNotFoundException("Request not found"));
 
-        // ✅ TESTS EXPECT SIMPLE SUCCESS
-        request.setStatus("SUCCESS");
+        CredentialRecord credential =
+                credentialService.getById(request.getCredentialId());
+
+        if (credential.getExpiryDate() != null &&
+            credential.getExpiryDate().isBefore(LocalDate.now())) {
+
+            request.setStatus("FAILED");
+
+        } else {
+            request.setStatus("SUCCESS");
+        }
 
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setCredentialId(request.getCredentialId());
         auditService.logEvent(audit);
 
-        return requestRepository.save(request);
+        return repository.save(request);
     }
 
-    // =====================================================
-    // GET BY CREDENTIAL
-    // =====================================================
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return requestRepository.findByCredentialId(credentialId);
+        return repository.findByCredentialId(credentialId);
     }
 }
