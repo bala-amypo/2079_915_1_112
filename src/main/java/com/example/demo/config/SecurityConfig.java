@@ -1,36 +1,5 @@
 package com.example.demo.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.example.demo.security.JwtUtil;
-
-@Configuration
 public class SecurityConfig {
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword + "_ENC";
-            }
-        };
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    // ✅ ADD THIS METHOD
-    @Bean
-    public JwtUtil jwtUtil() {
-        return new JwtUtil();
-    }
+    
 }
