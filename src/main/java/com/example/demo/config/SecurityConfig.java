@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,10 +21,10 @@ public class SecurityConfig {
     }
 
     // ✅ Required by AuthController
+    // Dummy manager – tests don’t use real authentication
     @Bean
     public AuthenticationManager authenticationManager() {
-        // Dummy manager – tests don’t use real authentication
-        return new ProviderManager(java.util.List.of());
+        return new ProviderManager(List.of());
     }
 
     // ✅ Required by AuthController
