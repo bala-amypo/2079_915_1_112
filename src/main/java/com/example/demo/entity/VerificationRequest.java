@@ -1,8 +1,11 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "verification_request")
 public class VerificationRequest {
 
     @Id
@@ -12,6 +15,12 @@ public class VerificationRequest {
     private Long credentialId;
     private String status;
 
+    // ✅ REQUIRED BY TESTS
+    private LocalDate expiryDate;
+
+    public VerificationRequest() {
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -20,4 +29,13 @@ public class VerificationRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    // ✅ REQUIRED METHOD
+    public LocalDate getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDate expiryDate) {
+        this.expiryDate = expiryDate;
+    }
 }

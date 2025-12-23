@@ -14,9 +14,13 @@ public class CredentialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ REQUIRED BY TESTS
+    private String credentialCode;
+
     private String title;
     private String issuer;
     private String status;
+
     private LocalDate expiryDate;
 
     @ManyToMany
@@ -25,13 +29,22 @@ public class CredentialRecord {
         joinColumns = @JoinColumn(name = "credential_id"),
         inverseJoinColumns = @JoinColumn(name = "rule_id")
     )
-    private Set<VerificationRule> rules = new HashSet<>(); // ✅ FIX
+    private Set<VerificationRule> rules = new HashSet<>();
 
     public CredentialRecord() {
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    // ✅ REQUIRED METHOD
+    public String getCredentialCode() {
+        return credentialCode;
+    }
+
+    public void setCredentialCode(String credentialCode) {
+        this.credentialCode = credentialCode;
+    }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
