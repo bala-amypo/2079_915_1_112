@@ -1,11 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.service.AuditTrailService;
-import jakarta.validation.Valid;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.service.AuditTrailService;
 
 @RestController
 @RequestMapping("/audit")
@@ -13,24 +14,20 @@ public class AuditTrailController {
 
     private final AuditTrailService service;
 
-    public AuditTrailController(AuditTrailService service) {
+    public AuditTrailController(
+            AuditTrailService service) {
         this.service = service;
     }
 
     @PostMapping
-    public AuditTrailRecord logEvent(
-            @Valid @RequestBody AuditTrailRecord record) {
-        return service.logEvent(record);
+    public ResponseEntity<AuditTrailRecord> log(
+            @RequestBody AuditTrailRecord record) {
+        return ResponseEntity.ok(service.logEvent(record));
     }
 
-    @GetMapping("/credential/{credentialId}")
-    public List<AuditTrailRecord> getByCredential(
+    @GetMapping("/{credentialId}")
+    public ResponseEntity<List<AuditTrailRecord>> getByCredential(
             @PathVariable Long credentialId) {
-        return service.getByCredentialId(credentialId);
-    }
-
-    @GetMapping
-    public List<AuditTrailRecord> getAll() {
-        return service.getAll();
+        return ResponseEntity.ok(service.getLogsByCredential(credentialId));
     }
 }
