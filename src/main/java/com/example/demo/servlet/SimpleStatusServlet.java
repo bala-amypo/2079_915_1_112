@@ -1,9 +1,3 @@
-/**package com.example.demo.servlet;
-
-public class SimpleStatusServlet {
-    
-}**/
-
 package com.example.demo.servlet;
 
 import java.io.IOException;
