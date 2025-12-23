@@ -16,6 +16,8 @@ public interface CredentialRecordRepository
 
     Optional<CredentialRecord> findByCredentialCode(String credentialCode);
 
+    // ✅ FIXED: explicit JPQL (method name kept same)
+    @Query("SELECT c FROM CredentialRecord c WHERE c.expiryDate < ?1")
     List<CredentialRecord> findExpiredBefore(LocalDate date);
 
     @Query("SELECT c FROM CredentialRecord c WHERE c.status = ?1")
