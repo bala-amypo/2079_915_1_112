@@ -16,14 +16,12 @@ public interface CredentialRecordRepository
 
     List<CredentialRecord> findByHolderId(Long holderId);
 
-    // ✅ FIXED METHOD NAME
     List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
-    // OPTIONAL (if used in tests)
     @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
     List<CredentialRecord> findByStatusUsingHql(String status);
 
-    // OPTIONAL (if used in tests)
-    @Query("SELECT c FROM CredentialRecord c WHERE c.issuer = :issuer AND c.credentialName = :type")
+    // ✅ FIXED FIELD NAME
+    @Query("SELECT c FROM CredentialRecord c WHERE c.issuer = :issuer AND c.credentialCode = :type")
     List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
 }
