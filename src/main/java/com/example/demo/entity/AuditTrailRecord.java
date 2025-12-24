@@ -11,15 +11,17 @@ public class AuditTrailRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔴 REQUIRED by findByCredentialId()
+    // IMPORTANT: tests & repositories expect this field
     private Long credentialId;
 
     private String action;
+
     private String performedBy;
 
+    // IMPORTANT: tests expect BOTH names to work
     private LocalDateTime loggedAt;
 
-    // ===== GETTERS & SETTERS =====
+    // ===================== GETTERS & SETTERS =====================
 
     public Long getId() {
         return id;
@@ -59,5 +61,15 @@ public class AuditTrailRecord {
 
     public void setLoggedAt(LocalDateTime loggedAt) {
         this.loggedAt = loggedAt;
+    }
+
+    // 🔥 VERY IMPORTANT — ALIAS METHOD FOR TESTS
+    // This FIXES: setTimestamp(LocalDateTime) error
+    public void setTimestamp(LocalDateTime time) {
+        this.loggedAt = time;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return this.loggedAt;
     }
 }
