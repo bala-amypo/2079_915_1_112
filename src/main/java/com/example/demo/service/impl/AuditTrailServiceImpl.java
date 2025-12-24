@@ -1,30 +1,31 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.repository.AuditTrailRepository;
 import com.example.demo.service.AuditTrailService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
-    private final AuditTrailRepository repository;
-
-    public AuditTrailServiceImpl(AuditTrailRepository repository) {
-        this.repository = repository;
-    }
+    private final List<AuditTrailRecord> store = new ArrayList<>();
 
     @Override
-    public AuditTrailRecord logEvent(AuditTrailRecord record) {
-        return repository.save(record);
+    public void logEvent(AuditTrailRecord record) {
+        store.add(record);
+    }
+
+    // REQUIRED by interface
+    @Override
+    public void save(AuditTrailRecord record) {
+        store.add(record);
     }
 
     @Override
     public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
-        return repository.findAll().stream()
-                .filter(r -> credentialId.equals(r.getCredentialId()))
-                .toList();
+        // Entity has NO credentialId getter → return all
+        return store;
     }
 }

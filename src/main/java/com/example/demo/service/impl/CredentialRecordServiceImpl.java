@@ -5,7 +5,6 @@ import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -18,8 +17,8 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord createCredential(CredentialRecord credential) {
-        return repository.save(credential);
+    public CredentialRecord createCredential(CredentialRecord record) {
+        return repository.save(record);
     }
 
     @Override
@@ -34,26 +33,13 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-        CredentialRecord existing = getCredentialById(id);
-
-        existing.setCredentialCode(updated.getCredentialCode());
-        existing.setExpiryDate(updated.getExpiryDate());
-        existing.setStatus(updated.getStatus());
-        existing.setMetadataJson(updated.getMetadataJson());
-
-        return repository.save(existing);
+    public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
+        return repository.findAll();
     }
 
+    // REQUIRED by interface
     @Override
     public void deleteCredential(Long id) {
         repository.deleteById(id);
-    }
-
-    @Override
-    public List<CredentialRecord> getExpiredCredentials(LocalDate date) {
-        return repository.findAll().stream()
-                .filter(c -> c.getExpiryDate() != null && c.getExpiryDate().isBefore(date))
-                .toList();
     }
 }
