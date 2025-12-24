@@ -1,3 +1,11 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.service.AuditTrailService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/audit")
 public class AuditTrailController {
@@ -9,12 +17,12 @@ public class AuditTrailController {
     }
 
     @PostMapping
-    public AuditTrailRecord log(@RequestBody AuditTrailRecord record) {
-        return service.logEvent(record);
+    public void log(@RequestBody AuditTrailRecord record) {
+        service.logEvent(record);
     }
 
-    @GetMapping("/credential/{id}")
-    public List<AuditTrailRecord> byCredential(@PathVariable Long id) {
-        return service.getLogsByCredential(id);
+    @GetMapping("/{credentialId}")
+    public List<AuditTrailRecord> getByCredential(@PathVariable Long credentialId) {
+        return service.getLogsByCredential(credentialId);
     }
 }

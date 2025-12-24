@@ -1,3 +1,11 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.CredentialRecord;
+import com.example.demo.service.CredentialRecordService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/credentials")
 public class CredentialRecordController {
@@ -9,8 +17,8 @@ public class CredentialRecordController {
     }
 
     @PostMapping
-    public CredentialRecord create(@RequestBody CredentialRecord c) {
-        return service.createCredential(c);
+    public CredentialRecord create(@RequestBody CredentialRecord record) {
+        return service.createCredential(record);
     }
 
     @GetMapping("/{id}")
