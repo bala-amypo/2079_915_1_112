@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.entity.VerificationRequest;
+import com.example.demo.entity.VerificationStatus;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.VerificationRequestService;
@@ -26,7 +27,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        request.setStatus("PENDING");
+        request.setStatus(VerificationStatus.PENDING);
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
@@ -44,9 +45,10 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     public VerificationRequest processVerification(Long requestId) {
 
         VerificationRequest request =
-                requestRepository.findById(requestId).orElseThrow();
+                requestRepository.findById(requestId)
+                        .orElseThrow(() -> new RuntimeException("Request not found"));
 
-        request.setStatus("APPROVED");
+        request.setStatus(VerificationStatus.APPROVED);
 
         VerificationRequest updated = requestRepository.save(request);
 
