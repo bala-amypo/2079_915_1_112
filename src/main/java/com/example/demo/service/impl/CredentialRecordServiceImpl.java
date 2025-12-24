@@ -18,12 +18,12 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         this.repository = repository;
     }
 
+    // ✅ FIXED METHOD NAME
     @Override
-    public CredentialRecord create(CredentialRecord record) {
+    public CredentialRecord createCredential(CredentialRecord record) {
         return repository.save(record);
     }
 
-    // ✅ METHOD NAME MUST MATCH INTERFACE
     @Override
     public CredentialRecord getCredentialById(Long id) {
         return repository.findById(id)
