@@ -30,16 +30,18 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        // ✅ FIX: use INNER ENUM, not String
-        request.setStatus(VerificationRequest.VerificationStatus.PENDING);
+        // ✅ FIX 1: status is STRING
+        request.setStatus("PENDING");
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
 
+        // ✅ FIX 2: use ONLY existing fields
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setAction("VERIFICATION_REQUESTED");
         audit.setCredentialId(request.getCredentialId());
-        audit.setDetails("Verification initiated");
+        audit.setTimestamp(LocalDateTime.now());
+
         auditRepository.save(audit);
 
         return saved;
@@ -52,17 +54,18 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     public VerificationRequest processVerification(Long requestId) {
 
         VerificationRequest request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+                .orElseThrow(() -> new RuntimeException("Verification request not found"));
 
-        // ✅ FIX: use INNER ENUM, not String
-        request.setStatus(VerificationRequest.VerificationStatus.VERIFIED);
+        // ✅ FIX 3: status is STRING
+        request.setStatus("VERIFIED");
 
         VerificationRequest updated = requestRepository.save(request);
 
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setAction("VERIFICATION_COMPLETED");
         audit.setCredentialId(request.getCredentialId());
-        audit.setDetails("Verification completed successfully");
+        audit.setTimestamp(LocalDateTime.now());
+
         auditRepository.save(audit);
 
         return updated;
