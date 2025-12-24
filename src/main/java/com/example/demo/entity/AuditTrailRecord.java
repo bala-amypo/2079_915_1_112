@@ -4,63 +4,27 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "audit_trail_record")
 public class AuditTrailRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long credentialId;
     private String action;
+    private LocalDateTime loggedAt;
 
-    private String details;
+    // ===== GETTERS & SETTERS =====
 
-    private LocalDateTime timestamp;
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // ✅ IMPORTANT: this is NOT credentialId
-    @ManyToOne
-    @JoinColumn(name = "credential_id")
-    private CredentialRecord credential;
+    public Long getCredentialId() { return credentialId; }
+    public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
 
-    // getters & setters
+    public String getAction() { return action; }
+    public void setAction(String action) { this.action = action; }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public CredentialRecord getCredential() {
-        return credential;
-    }
-
-    public void setCredential(CredentialRecord credential) {
-        this.credential = credential;
-    }
+    public LocalDateTime getLoggedAt() { return loggedAt; }
+    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
 }
