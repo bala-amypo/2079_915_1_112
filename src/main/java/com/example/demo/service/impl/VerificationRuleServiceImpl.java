@@ -1,22 +1,52 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.VerificationRule;
-import com.example.demo.entity.CredentialRecord;
-import com.example.demo.service.VerificationRuleService;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import com.example.demo.entity.VerificationRule;
+import com.example.demo.repository.VerificationRuleRepository;
+import com.example.demo.service.VerificationRuleService;
 
 @Service
 public class VerificationRuleServiceImpl implements VerificationRuleService {
 
-    @Override
-    public VerificationRule createRule(VerificationRule rule) {
-        return rule; // no DB required for tests
+    private final VerificationRuleRepository repository;
+
+    /*
+     * THIS CONSTRUCTOR IS REQUIRED BY TEST CASES
+     * DigitalCredentialVerificationEngineTest uses:
+     * new VerificationRuleServiceImpl(verificationRuleRepository)
+     */
+    public VerificationRuleServiceImpl(VerificationRuleRepository repository) {
+        this.repository = repository;
+    }
+
+    /*
+     * THIS NO-ARGS CONSTRUCTOR IS REQUIRED BY SPRING
+     * (Spring can still inject via proxy if needed)
+     */
+    public VerificationRuleServiceImpl() {
+        this.repository = null;
     }
 
     @Override
-    public boolean validateCredential(CredentialRecord credential) {
-        return credential.getExpiryDate().isAfter(LocalDate.now());
+    public VerificationRule save(VerificationRule rule) {
+        return repository.save(rule);
+    }
+
+    @Override
+    public VerificationRule getById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<VerificationRule> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }
