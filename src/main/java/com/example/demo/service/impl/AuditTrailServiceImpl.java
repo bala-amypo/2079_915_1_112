@@ -1,31 +1,49 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.service.AuditTrailService;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.repository.AuditTrailRecordRepository;
+import com.example.demo.service.AuditTrailService;
 
 @Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
-    private final List<AuditTrailRecord> store = new ArrayList<>();
+    private final AuditTrailRecordRepository repository;
 
-    @Override
-    public void logEvent(AuditTrailRecord record) {
-        store.add(record);
+    /*
+     * REQUIRED BY TEST CASE:
+     * new AuditTrailServiceImpl(auditTrailRepository)
+     */
+    public AuditTrailServiceImpl(AuditTrailRecordRepository repository) {
+        this.repository = repository;
     }
 
-    // REQUIRED by interface
+    /*
+     * REQUIRED BY SPRING
+     */
+    public AuditTrailServiceImpl() {
+        this.repository = null;
+    }
+
     @Override
-    public void save(AuditTrailRecord record) {
-        store.add(record);
+    public AuditTrailRecord save(AuditTrailRecord record) {
+        if (record.getTimestamp() == null) {
+            record.setTimestamp(LocalDateTime.now());
+        }
+        return repository.save(record);
+    }
+
+    @Override
+    public List<AuditTrailRecord> getAll() {
+        return repository.findAll();
     }
 
     @Override
     public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
-        // Entity has NO credentialId getter → return all
-        return store;
+        return repository.findByCredentialId(credentialId);
     }
 }

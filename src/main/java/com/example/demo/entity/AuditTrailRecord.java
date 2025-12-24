@@ -1,7 +1,13 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "audit_trail_record")
@@ -11,24 +17,39 @@ public class AuditTrailRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // IMPORTANT: tests & repositories expect this field
+    /*
+     * IMPORTANT:
+     * Tests + Repository expect THIS FIELD NAME exactly
+     */
+    @Column(nullable = false)
     private Long credentialId;
 
+    @Column(nullable = false)
     private String action;
 
+    @Column(nullable = false)
     private String performedBy;
 
-    // IMPORTANT: tests expect BOTH names to work
-    private LocalDateTime loggedAt;
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
-    // ===================== GETTERS & SETTERS =====================
+    // ---------------- CONSTRUCTORS ----------------
+
+    public AuditTrailRecord() {
+        // Required by JPA
+    }
+
+    public AuditTrailRecord(Long credentialId, String action, String performedBy) {
+        this.credentialId = credentialId;
+        this.action = action;
+        this.performedBy = performedBy;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    // ---------------- GETTERS & SETTERS ----------------
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getCredentialId() {
@@ -55,21 +76,17 @@ public class AuditTrailRecord {
         this.performedBy = performedBy;
     }
 
-    public LocalDateTime getLoggedAt() {
-        return loggedAt;
-    }
-
-    public void setLoggedAt(LocalDateTime loggedAt) {
-        this.loggedAt = loggedAt;
-    }
-
-    // 🔥 VERY IMPORTANT — ALIAS METHOD FOR TESTS
-    // This FIXES: setTimestamp(LocalDateTime) error
-    public void setTimestamp(LocalDateTime time) {
-        this.loggedAt = time;
-    }
-
+    /*
+     * 🔴 REQUIRED BY:
+     * VerificationRequestServiceImpl
+     * AuditTrailServiceImpl
+     * Test cases
+     */
     public LocalDateTime getTimestamp() {
-        return this.loggedAt;
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
