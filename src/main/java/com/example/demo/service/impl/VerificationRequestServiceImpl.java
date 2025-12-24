@@ -13,44 +13,50 @@ import java.util.List;
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private final VerificationRequestRepository requestRepo;
-    private final AuditTrailRecordRepository auditRepo;
+    private final VerificationRequestRepository requestRepository;
+    private final AuditTrailRecordRepository auditRepository;
 
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepo,
-            AuditTrailRecordRepository auditRepo) {
-        this.requestRepo = requestRepo;
-        this.auditRepo = auditRepo;
+            VerificationRequestRepository requestRepository,
+            AuditTrailRecordRepository auditRepository) {
+        this.requestRepository = requestRepository;
+        this.auditRepository = auditRepository;
     }
 
+    // ✅ REQUIRED BY INTERFACE
     @Override
-    public VerificationRequest createRequest(VerificationRequest request) {
+    public VerificationRequest initiateVerification(VerificationRequest request) {
         request.setRequestedAt(LocalDateTime.now());
-        return requestRepo.save(request);
+        request.setStatus("PENDING");
+        return requestRepository.save(request);
     }
 
+    // ✅ REQUIRED BY INTERFACE
     @Override
     public VerificationRequest processVerification(Long requestId) {
-        VerificationRequest request = requestRepo.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        VerificationRequest request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Verification request not found"));
 
         request.setStatus("VERIFIED");
-        requestRepo.save(request);
+        requestRepository.save(request);
 
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setCredentialId(request.getCredentialId());
         audit.setAction("VERIFICATION_PROCESSED");
         audit.setPerformedBy("SYSTEM");
 
-        // ✅ NOW THIS WORKS
+        // This now WORKS (alias method exists)
         audit.setTimestamp(LocalDateTime.now());
 
-        auditRepo.save(audit);
+        auditRepository.save(audit);
+
         return request;
     }
 
+    // ✅ REQUIRED BY INTERFACE
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return requestRepo.findByCredentialId(credentialId);
+        return requestRepository.findByCredentialId(credentialId);
     }
 }
