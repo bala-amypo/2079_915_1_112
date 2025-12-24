@@ -46,6 +46,31 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         return saved;
     }
 
+    // ✅ THIS METHOD WAS MISSING
+    @Override
+    public VerificationRequest processVerification(Long requestId) {
+
+        VerificationRequest request =
+                requestRepo.findById(requestId).orElse(null);
+
+        if (request == null) {
+            return null;
+        }
+
+        // simple rule validation hook
+        ruleService.validateCredential(
+                credentialService.getCredentialById(request.getCredentialId())
+        );
+
+        AuditTrailRecord log = new AuditTrailRecord();
+        log.setCredentialId(request.getCredentialId());
+        log.setAction("VERIFICATION_PROCESSED");
+        log.setLoggedAt(LocalDateTime.now());
+        auditService.save(log);
+
+        return request;
+    }
+
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
         return requestRepo.findByCredentialId(credentialId);
