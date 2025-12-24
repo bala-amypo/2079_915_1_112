@@ -18,13 +18,13 @@ public class VerificationRuleServiceImpl implements VerificationRuleService {
     }
 
     @Override
-    public VerificationRule createRule(VerificationRule rule) {
+    public VerificationRule save(VerificationRule rule) {
         return repository.save(rule);
     }
 
     @Override
     public boolean validateCredential(CredentialRecord credential) {
-        return credential != null && credential.getExpiryDate() != null;
+        return credential != null;
     }
 
     @Override

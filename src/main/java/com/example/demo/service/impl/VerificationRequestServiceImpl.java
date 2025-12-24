@@ -26,7 +26,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        request.setStatus(VerificationRequest.VerificationStatus.PENDING);
+        request.setStatus("PENDING");
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
@@ -46,7 +46,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         VerificationRequest request =
                 requestRepository.findById(requestId).orElseThrow();
 
-        request.setStatus(VerificationRequest.VerificationStatus.APPROVED);
+        request.setStatus("APPROVED");
 
         VerificationRequest updated = requestRepository.save(request);
 
