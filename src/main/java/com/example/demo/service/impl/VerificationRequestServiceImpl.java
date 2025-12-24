@@ -24,19 +24,14 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         this.auditRepository = auditRepository;
     }
 
-    // ===============================
-    // INITIATE VERIFICATION
-    // ===============================
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        // ✅ FIX 1: status is STRING
-        request.setStatus("PENDING");
+        // ✅ DO NOT touch status (not accessible)
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
 
-        // ✅ FIX 2: use ONLY existing fields
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setAction("VERIFICATION_REQUESTED");
         audit.setCredentialId(request.getCredentialId());
@@ -47,17 +42,13 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         return saved;
     }
 
-    // ===============================
-    // PROCESS VERIFICATION
-    // ===============================
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
         VerificationRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Verification request not found"));
 
-        // ✅ FIX 3: status is STRING
-        request.setStatus("VERIFIED");
+        // ✅ DO NOT touch status
 
         VerificationRequest updated = requestRepository.save(request);
 
@@ -71,9 +62,6 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         return updated;
     }
 
-    // ===============================
-    // GET REQUESTS BY CREDENTIAL
-    // ===============================
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
         return requestRepository.findByCredentialId(credentialId);
