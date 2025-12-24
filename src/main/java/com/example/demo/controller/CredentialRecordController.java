@@ -16,48 +16,35 @@ public class CredentialRecordController {
         this.service = service;
     }
 
-    // CREATE
     @PostMapping
-    public CredentialRecord save(@RequestBody CredentialRecord record) {
-        return service.save(record);
+    public CredentialRecord create(@RequestBody CredentialRecord credential) {
+        return service.createCredential(credential);
     }
 
-    // GET BY ID
     @GetMapping("/{id}")
-    public CredentialRecord get(@PathVariable long id) {
-        return service.get(id);
+    public CredentialRecord getById(@PathVariable Long id) {
+        return service.getCredentialById(id);
     }
 
-    // GET ALL
     @GetMapping
-    public List<CredentialRecord> getAllRecords() {
-        return service.getAllRecords();
+    public List<CredentialRecord> getAll() {
+        return service.getAllCredentials();
     }
 
-    // UPDATE
-    @PutMapping("/{id}")
-    public CredentialRecord updateRecord(
-            @PathVariable long id,
-            @RequestBody CredentialRecord record
-    ) {
-        return service.updateRecord(id, record);
-    }
-
-    // DELETE
-    @DeleteMapping("/{id}")
-    public void deleteRecord(@PathVariable long id) {
-        service.deleteRecord(id);
-    }
-
-    // GET BY HOLDER
     @GetMapping("/holder/{holderId}")
-    public List<CredentialRecord> findByHolderId(@PathVariable long holderId) {
-        return service.findByHolderId(holderId);
+    public List<CredentialRecord> getByHolder(@PathVariable Long holderId) {
+        return service.getCredentialsByHolder(holderId);
     }
 
-    // GET BY CODE
-    @GetMapping("/code/{code}")
-    public CredentialRecord findByCode(@PathVariable String code) {
-        return service.findByCode(code);
+    @PutMapping("/{id}")
+    public CredentialRecord update(
+            @PathVariable Long id,
+            @RequestBody CredentialRecord credential) {
+        return service.updateCredential(id, credential);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.deleteCredential(id);
     }
 }
