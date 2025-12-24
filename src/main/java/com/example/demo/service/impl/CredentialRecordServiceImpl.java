@@ -31,6 +31,11 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
+    public List<CredentialRecord> getAllCredentials() {
+        return repository.findAll();
+    }
+
+    @Override
     public CredentialRecord getCredentialByCode(String code) {
         return repository.findByCredentialCode(code)
                 .orElseThrow(() ->
@@ -43,14 +48,15 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord update(Long id, CredentialRecord updated) {
+    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
+
         CredentialRecord existing = getById(id);
         existing.setStatus(updated.getStatus());
         existing.setExpiryDate(updated.getExpiryDate());
+
         return repository.save(existing);
     }
 
-    // ✅ MISSING METHOD (CAUSE OF ERROR)
     @Override
     public void deleteCredential(Long id) {
         CredentialRecord existing = getById(id);
