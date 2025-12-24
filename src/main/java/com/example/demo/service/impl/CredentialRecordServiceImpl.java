@@ -35,6 +35,12 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         return repository.findAll();
     }
 
+    // ✅ THIS METHOD NAME MUST MATCH INTERFACE
+    @Override
+    public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
+        return repository.findByHolderId(holderId);
+    }
+
     @Override
     public CredentialRecord getCredentialByCode(String code) {
         return repository.findByCredentialCode(code)
@@ -43,17 +49,10 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public List<CredentialRecord> getByHolderId(Long holderId) {
-        return repository.findByHolderId(holderId);
-    }
-
-    @Override
     public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-
         CredentialRecord existing = getById(id);
         existing.setStatus(updated.getStatus());
         existing.setExpiryDate(updated.getExpiryDate());
-
         return repository.save(existing);
     }
 
