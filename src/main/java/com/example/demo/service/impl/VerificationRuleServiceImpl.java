@@ -18,7 +18,7 @@ public class VerificationRuleServiceImpl implements VerificationRuleService {
     }
 
     @Override
-    public VerificationRule save(VerificationRule rule) {
+    public VerificationRule createRule(VerificationRule rule) {
         return repository.save(rule);
     }
 
@@ -27,7 +27,7 @@ public class VerificationRuleServiceImpl implements VerificationRuleService {
         return credential != null;
     }
 
-    @Override
+    // ❗ NO @Override HERE (not in interface)
     public List<VerificationRule> getAllRules() {
         return repository.findAll();
     }

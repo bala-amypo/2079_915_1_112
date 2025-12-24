@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.entity.VerificationRequest;
-import com.example.demo.entity.VerificationStatus;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.VerificationRequestService;
@@ -27,7 +26,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        request.setStatus(VerificationStatus.PENDING);
+        request.setStatus("PENDING");   // ✅ NO enum access
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
@@ -44,11 +43,10 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest processVerification(Long requestId) {
 
-        VerificationRequest request =
-                requestRepository.findById(requestId)
-                        .orElseThrow(() -> new RuntimeException("Request not found"));
+        VerificationRequest request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
 
-        request.setStatus(VerificationStatus.APPROVED);
+        request.setStatus("APPROVED");  // ✅ NO enum access
 
         VerificationRequest updated = requestRepository.save(request);
 
