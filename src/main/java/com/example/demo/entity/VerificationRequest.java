@@ -1,11 +1,9 @@
 package com.example.demo.entity;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "verification_request")
 public class VerificationRequest {
 
     @Id
@@ -13,29 +11,36 @@ public class VerificationRequest {
     private Long id;
 
     private Long credentialId;
+
     private String status;
 
-    // ✅ REQUIRED BY TESTS
-    private LocalDate expiryDate;
+    private LocalDateTime requestedAt;
 
-    public VerificationRequest() {
+    public Long getId() {
+        return id;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getCredentialId() { return credentialId; }
-    public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    // ✅ REQUIRED METHOD
-    public LocalDate getExpiryDate() {
-        return expiryDate;
+    public Long getCredentialId() {
+        return credentialId;
     }
 
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setCredentialId(Long credentialId) {
+        this.credentialId = credentialId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getRequestedAt() {
+        return requestedAt;
+    }
+
+    public void setRequestedAt(LocalDateTime requestedAt) {
+        this.requestedAt = requestedAt;
     }
 }
