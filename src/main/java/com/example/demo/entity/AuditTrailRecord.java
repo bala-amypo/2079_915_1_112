@@ -1,55 +1,39 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
 @Entity
-@Table(name = "audit_trail_record")
 public class AuditTrailRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*
-     * IMPORTANT:
-     * Tests + Repository expect THIS FIELD NAME exactly
-     */
-    @Column(nullable = false)
     private Long credentialId;
 
-    @Column(nullable = false)
     private String action;
 
-    @Column(nullable = false)
-    private String performedBy;
+    private String actor;
 
-    @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    // ---------------- CONSTRUCTORS ----------------
-
-    public AuditTrailRecord() {
-        // Required by JPA
+    // ===== REQUIRED BY TESTS =====
+    public LocalDateTime getLoggedAt() {
+        return this.timestamp;
     }
 
-    public AuditTrailRecord(Long credentialId, String action, String performedBy) {
-        this.credentialId = credentialId;
-        this.action = action;
-        this.performedBy = performedBy;
-        this.timestamp = LocalDateTime.now();
+    public void setLoggedAt(LocalDateTime time) {
+        this.timestamp = time;
     }
 
-    // ---------------- GETTERS & SETTERS ----------------
-
+    // ===== GETTERS & SETTERS =====
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getCredentialId() {
@@ -68,20 +52,14 @@ public class AuditTrailRecord {
         this.action = action;
     }
 
-    public String getPerformedBy() {
-        return performedBy;
+    public String getActor() {
+        return actor;
     }
 
-    public void setPerformedBy(String performedBy) {
-        this.performedBy = performedBy;
+    public void setActor(String actor) {
+        this.actor = actor;
     }
 
-    /*
-     * 🔴 REQUIRED BY:
-     * VerificationRequestServiceImpl
-     * AuditTrailServiceImpl
-     * Test cases
-     */
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
