@@ -2,13 +2,13 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.entity.VerificationRequest;
+import com.example.demo.entity.VerificationStatus;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.VerificationRequestService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
@@ -23,40 +23,37 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         this.auditRepository = auditRepository;
     }
 
-    // ✅ REQUIRED BY INTERFACE
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
+        request.setStatus(VerificationStatus.PENDING);
         request.setRequestedAt(LocalDateTime.now());
-        request.setStatus("PENDING");
-        return requestRepository.save(request);
-    }
 
-    // ✅ REQUIRED BY INTERFACE
-    @Override
-    public VerificationRequest processVerification(Long requestId) {
-
-        VerificationRequest request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Verification request not found"));
-
-        request.setStatus("VERIFIED");
-        requestRepository.save(request);
+        VerificationRequest saved = requestRepository.save(request);
 
         AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setCredentialId(request.getCredentialId());
-        audit.setAction("VERIFICATION_PROCESSED");
-        audit.setPerformedBy("SYSTEM");
-
-        // This now WORKS (alias method exists)
-        audit.setTimestamp(LocalDateTime.now());
+        audit.setCredentialId(saved.getCredentialId());
+        audit.setAction("VERIFICATION_REQUESTED");
 
         auditRepository.save(audit);
 
-        return request;
+        return saved;
     }
 
-    // ✅ REQUIRED BY INTERFACE
     @Override
-    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return requestRepository.findByCredentialId(credentialId);
+    public VerificationRequest processVerification(Long requestId) {
+        VerificationRequest request =
+                requestRepository.findById(requestId).orElseThrow();
+
+        request.setStatus(VerificationStatus.APPROVED);
+
+        VerificationRequest updated = requestRepository.save(request);
+
+        AuditTrailRecord audit = new AuditTrailRecord();
+        audit.setCredentialId(updated.getCredentialId());
+        audit.setAction("VERIFICATION_APPROVED");
+
+        auditRepository.save(audit);
+
+        return updated;
     }
 }
