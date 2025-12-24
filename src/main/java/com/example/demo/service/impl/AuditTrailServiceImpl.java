@@ -5,6 +5,8 @@ import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.service.AuditTrailService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
@@ -14,11 +16,13 @@ public class AuditTrailServiceImpl implements AuditTrailService {
         this.repository = repository;
     }
 
-    /**
-     * REQUIRED by AuditTrailService
-     */
     @Override
     public void logEvent(AuditTrailRecord record) {
         repository.save(record);
+    }
+
+    @Override
+    public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
+        return repository.findByCredentialId(credentialId);
     }
 }

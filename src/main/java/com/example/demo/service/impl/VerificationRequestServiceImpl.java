@@ -2,13 +2,13 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.entity.VerificationRequest;
-import com.example.demo.entity.VerificationStatus;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.VerificationRequestService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
@@ -25,7 +25,8 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
 
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-        request.setStatus(VerificationStatus.PENDING);
+
+        request.setStatus(VerificationRequest.VerificationStatus.PENDING);
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
@@ -41,10 +42,11 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
 
     @Override
     public VerificationRequest processVerification(Long requestId) {
+
         VerificationRequest request =
                 requestRepository.findById(requestId).orElseThrow();
 
-        request.setStatus(VerificationStatus.APPROVED);
+        request.setStatus(VerificationRequest.VerificationStatus.APPROVED);
 
         VerificationRequest updated = requestRepository.save(request);
 
@@ -55,5 +57,10 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         auditRepository.save(audit);
 
         return updated;
+    }
+
+    @Override
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return requestRepository.findByCredentialId(credentialId);
     }
 }
