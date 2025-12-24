@@ -26,7 +26,8 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        request.setStatus("PENDING");   // ✅ NO enum access
+        // ✅ CORRECT WAY (inner enum)
+        request.setStatus(VerificationRequest.VerificationStatus.PENDING);
         request.setRequestedAt(LocalDateTime.now());
 
         VerificationRequest saved = requestRepository.save(request);
@@ -46,7 +47,8 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         VerificationRequest request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
-        request.setStatus("APPROVED");  // ✅ NO enum access
+        // ✅ CORRECT WAY (inner enum)
+        request.setStatus(VerificationRequest.VerificationStatus.APPROVED);
 
         VerificationRequest updated = requestRepository.save(request);
 
