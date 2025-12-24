@@ -16,18 +16,43 @@ public class CredentialRecordController {
         this.service = service;
     }
 
+    // ================= BASIC CRUD =================
+
     @PostMapping
     public CredentialRecord create(@RequestBody CredentialRecord record) {
-        return service.createCredential(record);
+        return service.create(record);
     }
 
     @GetMapping("/{id}")
-    public CredentialRecord getById(@PathVariable Long id) {
-        return service.getCredentialById(id);
+    public CredentialRecord getById(@PathVariable long id) {
+        return service.getById(id);
     }
 
     @GetMapping
     public List<CredentialRecord> getAll() {
-        return service.getAllCredentials();
+        return service.getAll();
+    }
+
+    @PutMapping("/{id}")
+    public CredentialRecord update(@PathVariable long id,
+                                   @RequestBody CredentialRecord record) {
+        return service.update(id, record);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable long id) {
+        service.delete(id);
+    }
+
+    // ================= REQUIRED BY TEST CASES =================
+
+    @GetMapping("/holder/{holderId}")
+    public List<CredentialRecord> getByHolder(@PathVariable long holderId) {
+        return service.getByHolder(holderId);
+    }
+
+    @GetMapping("/code/{code}")
+    public CredentialRecord getByCode(@PathVariable String code) {
+        return service.getByCode(code);
     }
 }
