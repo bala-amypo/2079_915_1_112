@@ -24,9 +24,17 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
+    public CredentialRecord getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Credential not found"));
+    }
+
+    @Override
     public CredentialRecord getCredentialByCode(String code) {
         return repository.findByCredentialCode(code)
-                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Credential not found"));
     }
 
     @Override
@@ -35,16 +43,17 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord getById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Credential not found"));
-    }
-
-    @Override
     public CredentialRecord update(Long id, CredentialRecord updated) {
         CredentialRecord existing = getById(id);
         existing.setStatus(updated.getStatus());
         existing.setExpiryDate(updated.getExpiryDate());
         return repository.save(existing);
+    }
+
+    // ✅ MISSING METHOD (CAUSE OF ERROR)
+    @Override
+    public void deleteCredential(Long id) {
+        CredentialRecord existing = getById(id);
+        repository.delete(existing);
     }
 }
