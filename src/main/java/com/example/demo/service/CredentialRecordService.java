@@ -1,21 +1,19 @@
 package com.example.demo.service;
 
-import java.util.List;
 import com.example.demo.entity.CredentialRecord;
+import java.util.List;
 
 public interface CredentialRecordService {
 
-    CredentialRecord createCredential(CredentialRecord record);
+    CredentialRecord createCredential(CredentialRecord credential);
 
     CredentialRecord getCredentialById(Long id);
 
-    CredentialRecord getCredentialByCode(String code);
+    List<CredentialRecord> getAllCredentials();
 
     List<CredentialRecord> getCredentialsByHolder(Long holderId);
 
-    List<CredentialRecord> getAllCredentials();
-
-    CredentialRecord updateCredential(Long id, CredentialRecord record);
+    CredentialRecord updateCredential(Long id, CredentialRecord credential);
 
     void deleteCredential(Long id);
 }
