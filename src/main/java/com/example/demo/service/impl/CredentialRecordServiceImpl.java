@@ -23,8 +23,9 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         return repository.save(record);
     }
 
+    // ✅ METHOD NAME MUST MATCH INTERFACE
     @Override
-    public CredentialRecord getById(Long id) {
+    public CredentialRecord getCredentialById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Credential not found"));
@@ -35,7 +36,6 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         return repository.findAll();
     }
 
-    // ✅ THIS METHOD NAME MUST MATCH INTERFACE
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
         return repository.findByHolderId(holderId);
@@ -50,7 +50,7 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     @Override
     public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-        CredentialRecord existing = getById(id);
+        CredentialRecord existing = getCredentialById(id);
         existing.setStatus(updated.getStatus());
         existing.setExpiryDate(updated.getExpiryDate());
         return repository.save(existing);
@@ -58,7 +58,7 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     @Override
     public void deleteCredential(Long id) {
-        CredentialRecord existing = getById(id);
+        CredentialRecord existing = getCredentialById(id);
         repository.delete(existing);
     }
 }
