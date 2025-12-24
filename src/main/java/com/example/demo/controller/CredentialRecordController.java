@@ -1,11 +1,3 @@
-package com.example.demo.controller;
-
-import com.example.demo.entity.CredentialRecord;
-import com.example.demo.service.CredentialRecordService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/credentials")
 public class CredentialRecordController {
@@ -17,8 +9,8 @@ public class CredentialRecordController {
     }
 
     @PostMapping
-    public CredentialRecord create(@RequestBody CredentialRecord credential) {
-        return service.createCredential(credential);
+    public CredentialRecord create(@RequestBody CredentialRecord c) {
+        return service.createCredential(c);
     }
 
     @GetMapping("/{id}")
@@ -29,10 +21,5 @@ public class CredentialRecordController {
     @GetMapping
     public List<CredentialRecord> getAll() {
         return service.getAllCredentials();
-    }
-
-    @GetMapping("/code/{code}")
-    public CredentialRecord getByCode(@PathVariable String code) {
-        return service.getCredentialByCode(code);
     }
 }
