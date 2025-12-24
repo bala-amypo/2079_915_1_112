@@ -4,17 +4,20 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "audit_trail_record")
 public class AuditTrailRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 🔴 REQUIRED by findByCredentialId()
     private Long credentialId;
+
     private String action;
+    private String performedBy;
 
     private LocalDateTime loggedAt;
-    private LocalDateTime timestamp;   // ✅ REQUIRED BY SERVICE
 
     // ===== GETTERS & SETTERS =====
 
@@ -42,19 +45,19 @@ public class AuditTrailRecord {
         this.action = action;
     }
 
+    public String getPerformedBy() {
+        return performedBy;
+    }
+
+    public void setPerformedBy(String performedBy) {
+        this.performedBy = performedBy;
+    }
+
     public LocalDateTime getLoggedAt() {
         return loggedAt;
     }
 
     public void setLoggedAt(LocalDateTime loggedAt) {
         this.loggedAt = loggedAt;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 }

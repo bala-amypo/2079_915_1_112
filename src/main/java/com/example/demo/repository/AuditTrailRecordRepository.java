@@ -1,15 +1,11 @@
 package com.example.demo.repository;
 
+import com.example.demo.entity.AuditTrailRecord;
+import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+public interface AuditTrailRecordRepository
+        extends JpaRepository<AuditTrailRecord, Long> {
 
-import com.example.demo.entity.AuditTrailRecord;
-
-@Repository
-public interface AuditTrailRecordRepository extends JpaRepository<AuditTrailRecord, Long> {
-
-    // ✅ correct: credential is an object, id is inside it
-    List<AuditTrailRecord> findByCredential_Id(Long credentialId);
+    List<AuditTrailRecord> findByCredentialId(Long credentialId);
 }
