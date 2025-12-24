@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface AuditTrailService {
 
-    void save(AuditTrailRecord record);
+    AuditTrailRecord save(AuditTrailRecord record);
 
-    void logEvent(AuditTrailRecord record);
+    AuditTrailRecord logEvent(AuditTrailRecord record);
 
     List<AuditTrailRecord> getLogsByCredential(Long credentialId);
 }

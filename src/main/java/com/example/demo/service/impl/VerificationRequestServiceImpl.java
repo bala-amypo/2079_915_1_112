@@ -2,9 +2,11 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.entity.VerificationRequest;
-import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
+import com.example.demo.service.AuditTrailService;
+import com.example.demo.service.CredentialRecordService;
 import com.example.demo.service.VerificationRequestService;
+import com.example.demo.service.VerificationRuleService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,64 +15,39 @@ import java.util.List;
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private final VerificationRequestRepository requestRepository;
-    private final AuditTrailRecordRepository auditRepository;
+    private final VerificationRequestRepository requestRepo;
+    private final CredentialRecordService credentialService;
+    private final VerificationRuleService ruleService;
+    private final AuditTrailService auditService;
 
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepository,
-            AuditTrailRecordRepository auditRepository
+            VerificationRequestRepository requestRepo,
+            CredentialRecordService credentialService,
+            VerificationRuleService ruleService,
+            AuditTrailService auditService
     ) {
-        this.requestRepository = requestRepository;
-        this.auditRepository = auditRepository;
+        this.requestRepo = requestRepo;
+        this.credentialService = credentialService;
+        this.ruleService = ruleService;
+        this.auditService = auditService;
     }
 
-    // ================================
-    // CREATE / INITIATE VERIFICATION
-    // ================================
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
+        request.setRequestedAt(LocalDateTime.now());
+        VerificationRequest saved = requestRepo.save(request);
 
-        // ❌ DO NOT SET STATUS HERE
-        // status is handled by entity default / tests
+        AuditTrailRecord log = new AuditTrailRecord();
+        log.setCredentialId(request.getCredentialId());
+        log.setAction("VERIFICATION_REQUESTED");
+        log.setLoggedAt(LocalDateTime.now());
+        auditService.save(log);
 
-        VerificationRequest savedRequest = requestRepository.save(request);
-
-        AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setCredentialId(savedRequest.getCredentialId());
-        audit.setAction("VERIFICATION_REQUEST_CREATED");
-        audit.setLoggedAt(LocalDateTime.now());
-
-        auditRepository.save(audit);
-
-        return savedRequest;
+        return saved;
     }
 
-    // ================================
-    // PROCESS VERIFICATION
-    // ================================
-    @Override
-    public VerificationRequest processVerification(Long requestId) {
-
-        VerificationRequest request = requestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Verification request not found"));
-
-        // ❌ DO NOT MODIFY STATUS
-
-        AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setCredentialId(request.getCredentialId());
-        audit.setAction("VERIFICATION_REQUEST_PROCESSED");
-        audit.setLoggedAt(LocalDateTime.now());
-
-        auditRepository.save(audit);
-
-        return requestRepository.save(request);
-    }
-
-    // ================================
-    // GET REQUESTS BY CREDENTIAL
-    // ================================
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return requestRepository.findByCredentialId(credentialId);
+        return requestRepo.findByCredentialId(credentialId);
     }
 }
