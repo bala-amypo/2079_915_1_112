@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "audit_trail_record")
 public class AuditTrailRecord {
 
     @Id
@@ -16,8 +17,19 @@ public class AuditTrailRecord {
 
     private LocalDateTime timestamp;
 
+    // ✅ IMPORTANT: this is NOT credentialId
+    @ManyToOne
+    @JoinColumn(name = "credential_id")
+    private CredentialRecord credential;
+
+    // getters & setters
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getAction() {
@@ -42,5 +54,13 @@ public class AuditTrailRecord {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public CredentialRecord getCredential() {
+        return credential;
+    }
+
+    public void setCredential(CredentialRecord credential) {
+        this.credential = credential;
     }
 }

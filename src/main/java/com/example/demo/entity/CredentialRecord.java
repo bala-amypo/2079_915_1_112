@@ -11,63 +11,24 @@ public class CredentialRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Unique credential identifier
-    @Column(nullable = false, unique = true)
     private String credentialCode;
 
-    // Issuer of the credential (e.g., University, Govt)
-    @Column(nullable = false)
-    private String issuer;
+    private String credentialName;
 
-    // ✅ REQUIRED BY TEST CASES (NOT credentialName)
-    @Column(nullable = false)
-    private String type;
+    private LocalDate expiryDate; // ✅ THIS IS THE FIELD NAME
 
-    // Credential holder reference
-    @Column(nullable = false)
-    private Long holderId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    // Expiry date of credential
-    @Column(nullable = false)
-    private LocalDate expiryDate;
-
-    // Status: ACTIVE / EXPIRED / REVOKED
-    @Column(nullable = false)
-    private String status;
-
-    // Extra metadata stored as JSON string
-    @Column(columnDefinition = "TEXT")
-    private String metadataJson;
-
-    /* =========================
-       Constructors
-       ========================= */
-
-    public CredentialRecord() {
-    }
-
-    public CredentialRecord(String credentialCode,
-                            String issuer,
-                            String type,
-                            Long holderId,
-                            LocalDate expiryDate,
-                            String status,
-                            String metadataJson) {
-        this.credentialCode = credentialCode;
-        this.issuer = issuer;
-        this.type = type;
-        this.holderId = holderId;
-        this.expiryDate = expiryDate;
-        this.status = status;
-        this.metadataJson = metadataJson;
-    }
-
-    /* =========================
-       Getters and Setters
-       ========================= */
+    // getters & setters
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getCredentialCode() {
@@ -78,28 +39,12 @@ public class CredentialRecord {
         this.credentialCode = credentialCode;
     }
 
-    public String getIssuer() {
-        return issuer;
+    public String getCredentialName() {
+        return credentialName;
     }
 
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getHolderId() {
-        return holderId;
-    }
-
-    public void setHolderId(Long holderId) {
-        this.holderId = holderId;
+    public void setCredentialName(String credentialName) {
+        this.credentialName = credentialName;
     }
 
     public LocalDate getExpiryDate() {
@@ -110,19 +55,11 @@ public class CredentialRecord {
         this.expiryDate = expiryDate;
     }
 
-    public String getStatus() {
-        return status;
+    public User getUser() {
+        return user;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getMetadataJson() {
-        return metadataJson;
-    }
-
-    public void setMetadataJson(String metadataJson) {
-        this.metadataJson = metadataJson;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -11,7 +11,8 @@ import com.example.demo.entity.CredentialRecord;
 @Repository
 public interface CredentialRecordRepository extends JpaRepository<CredentialRecord, Long> {
 
-    // ✅ THIS IS THE ONLY CORRECT METHOD NAME
+    // ✅ matches expiryDate field EXACTLY
     List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
+    CredentialRecord findByCredentialCode(String credentialCode);
 }
