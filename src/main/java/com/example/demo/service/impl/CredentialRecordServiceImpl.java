@@ -17,14 +17,13 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord createCredential(CredentialRecord record) {
-        return repository.save(record);
+    public CredentialRecord createCredential(CredentialRecord credential) {
+        return repository.save(credential);
     }
 
     @Override
     public CredentialRecord getCredentialById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Credential not found"));
+        return repository.findById(id).orElse(null);
     }
 
     @Override
@@ -34,14 +33,13 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        return repository.findAll();
+        return repository.findByHolderId(holderId);
     }
 
-    // 🔥 THIS METHOD WAS MISSING
     @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord record) {
-        CredentialRecord existing = getCredentialById(id);
-        return repository.save(existing);
+    public CredentialRecord updateCredential(Long id, CredentialRecord credential) {
+        credential.setId(id);
+        return repository.save(credential);
     }
 
     @Override

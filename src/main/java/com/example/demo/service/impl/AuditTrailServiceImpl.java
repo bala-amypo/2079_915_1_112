@@ -22,6 +22,11 @@ public class AuditTrailServiceImpl implements AuditTrailService {
     }
 
     @Override
+    public void logEvent(AuditTrailRecord record) {
+        repository.save(record);
+    }
+
+    @Override
     public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
         return repository.findByCredentialId(credentialId);
     }
