@@ -17,12 +17,12 @@ public class CredentialRecordController {
     }
 
     @PostMapping
-    public CredentialRecord create(@RequestBody CredentialRecord credential) {
-        return service.createCredential(credential);
+    public CredentialRecord create(@RequestBody CredentialRecord record) {
+        return service.createCredential(record);
     }
 
     @GetMapping("/{id}")
-    public CredentialRecord getById(@PathVariable Long id) {
+    public CredentialRecord get(@PathVariable Long id) {
         return service.getCredentialById(id);
     }
 
@@ -31,20 +31,26 @@ public class CredentialRecordController {
         return service.getAllCredentials();
     }
 
-    @GetMapping("/holder/{holderId}")
-    public List<CredentialRecord> getByHolder(@PathVariable Long holderId) {
-        return service.getCredentialsByHolder(holderId);
-    }
-
     @PutMapping("/{id}")
-    public CredentialRecord update(
-            @PathVariable Long id,
-            @RequestBody CredentialRecord credential) {
-        return service.updateCredential(id, credential);
+    public CredentialRecord update(@PathVariable Long id, @RequestBody CredentialRecord record) {
+        return service.updateCredential(id, record);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.deleteCredential(id);
+    }
+
+    @GetMapping("/holder/{holderId}")
+    public List<CredentialRecord> getByHolder(@PathVariable Long holderId) {
+        return service.getCredentialsByHolder(holderId);
+    }
+
+    @GetMapping("/code/{code}")
+    public List<CredentialRecord> getByCode(@PathVariable String code) {
+        return service.getAllCredentials()
+                .stream()
+                .filter(c -> code.equals(c.getCredentialCode()))
+                .toList();
     }
 }
