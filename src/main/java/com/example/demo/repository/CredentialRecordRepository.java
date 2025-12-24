@@ -9,22 +9,21 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.entity.CredentialRecord;
 
-public interface CredentialRecordRepository extends JpaRepository<CredentialRecord, Long> {
+public interface CredentialRecordRepository
+        extends JpaRepository<CredentialRecord, Long> {
 
-    // ✅ REQUIRED BY SERVICE
     Optional<CredentialRecord> findByCredentialCode(String credentialCode);
 
-    // ✅ REQUIRED BY SERVICE
     List<CredentialRecord> findByHolderId(Long holderId);
 
-    // ✅ REQUIRED BY TESTS
-    List<CredentialRecord> findExpiredBefore(LocalDate date);
+    // ✅ FIXED METHOD NAME
+    List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
-    // ✅ REQUIRED BY TESTS
+    // OPTIONAL (if used in tests)
     @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
     List<CredentialRecord> findByStatusUsingHql(String status);
 
-    // ✅ REQUIRED BY TESTS
-    @Query("SELECT c FROM CredentialRecord c WHERE c.issuer = :issuer AND c.credentialType = :type")
+    // OPTIONAL (if used in tests)
+    @Query("SELECT c FROM CredentialRecord c WHERE c.issuer = :issuer AND c.credentialName = :type")
     List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
 }
