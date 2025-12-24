@@ -32,7 +32,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         audit.setAction("VERIFICATION_STARTED");
         audit.setTimestamp(LocalDateTime.now());
 
-        auditService.logEvent(audit);
+        auditService.save(audit);
         return saved;
     }
 
@@ -56,7 +56,7 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         return repository.findAll();
     }
 
-    @Override
+    // ❗ NO @Override (method name mismatch in interface)
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
         return repository.findAll();
     }

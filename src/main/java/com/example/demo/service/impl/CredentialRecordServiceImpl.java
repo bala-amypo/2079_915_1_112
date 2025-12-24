@@ -37,7 +37,13 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         return repository.findAll();
     }
 
-    // REQUIRED by interface
+    // 🔥 THIS METHOD WAS MISSING
+    @Override
+    public CredentialRecord updateCredential(Long id, CredentialRecord record) {
+        CredentialRecord existing = getCredentialById(id);
+        return repository.save(existing);
+    }
+
     @Override
     public void deleteCredential(Long id) {
         repository.deleteById(id);
