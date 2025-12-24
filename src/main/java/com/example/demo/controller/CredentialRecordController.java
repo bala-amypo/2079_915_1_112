@@ -16,39 +16,48 @@ public class CredentialRecordController {
         this.service = service;
     }
 
+    // CREATE
     @PostMapping
-    public CredentialRecord create(@RequestBody CredentialRecord record) {
-        return service.create(record);
+    public CredentialRecord save(@RequestBody CredentialRecord record) {
+        return service.save(record);
     }
 
+    // GET BY ID
     @GetMapping("/{id}")
-    public CredentialRecord getById(@PathVariable long id) {
-        return service.getById(id);
+    public CredentialRecord get(@PathVariable long id) {
+        return service.get(id);
     }
 
+    // GET ALL
     @GetMapping
-    public List<CredentialRecord> getAll() {
-        return service.getAll();
+    public List<CredentialRecord> getAllRecords() {
+        return service.getAllRecords();
     }
 
+    // UPDATE
     @PutMapping("/{id}")
-    public CredentialRecord update(@PathVariable long id,
-                                   @RequestBody CredentialRecord record) {
-        return service.update(id, record);
+    public CredentialRecord updateRecord(
+            @PathVariable long id,
+            @RequestBody CredentialRecord record
+    ) {
+        return service.updateRecord(id, record);
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
-        service.delete(id);
+    public void deleteRecord(@PathVariable long id) {
+        service.deleteRecord(id);
     }
 
+    // GET BY HOLDER
     @GetMapping("/holder/{holderId}")
-    public List<CredentialRecord> getByHolder(@PathVariable long holderId) {
-        return service.getByHolder(holderId);
+    public List<CredentialRecord> findByHolderId(@PathVariable long holderId) {
+        return service.findByHolderId(holderId);
     }
 
+    // GET BY CODE
     @GetMapping("/code/{code}")
-    public CredentialRecord getByCode(@PathVariable String code) {
-        return service.getByCode(code);
+    public CredentialRecord findByCode(@PathVariable String code) {
+        return service.findByCode(code);
     }
 }
