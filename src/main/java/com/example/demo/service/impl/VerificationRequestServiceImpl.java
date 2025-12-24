@@ -37,9 +37,16 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     // ✅ REQUIRED BY INTERFACE
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-
         request.setRequestedAt(LocalDateTime.now());
-        VerificationRequest savedRequest = verificationRequestRepository.save(request);
+        return verificationRequestRepository.save(request);
+    }
+
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public VerificationRequest processVerification(Long requestId) {
+
+        VerificationRequest request = verificationRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Verification request not found"));
 
         CredentialRecord credential = credentialRecordRepository
                 .findById(request.getCredentialId())
@@ -50,26 +57,14 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setAction(valid ? "VERIFICATION_SUCCESS" : "VERIFICATION_FAILED");
         audit.setTimestamp(LocalDateTime.now());
-
         auditTrailService.save(audit);
 
-        return savedRequest;
+        return request;
     }
 
     // ✅ REQUIRED BY INTERFACE
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
         return verificationRequestRepository.findByCredentialId(credentialId);
-    }
-
-    // ❌ NOT IN INTERFACE → NO @Override
-    public VerificationRequest getRequestById(Long id) {
-        return verificationRequestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Verification request not found"));
-    }
-
-    // ❌ NOT IN INTERFACE → NO @Override
-    public List<VerificationRequest> getAllRequests() {
-        return verificationRequestRepository.findAll();
     }
 }
