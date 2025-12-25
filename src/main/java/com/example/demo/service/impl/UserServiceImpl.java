@@ -1,8 +1,11 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,51 +14,50 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repo;
-    private final PasswordEncoder encoder;
+    private final UserRepository userRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository repo, PasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
+    public UserServiceImpl(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User registerUser(User user) {
-        if (repo.findByEmail(user.getEmail()).isPresent()) {
-            return null; // REQUIRED by test t50
+    public User registerUser(RegisterRequest request) {
+
+        if (userRepo.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
         }
-        user.setPassword(encoder.encode(user.getPassword()));
-        return repo.save(user);
+
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("USER");
+
+        return userRepo.save(user);
     }
 
-    // ✅ FIXED METHOD
     @Override
     public User loginUser(String email, String password) {
 
-        User user = repo.findByEmail(email).orElse(null);
-        if (user == null) {
-            return null; // REQUIRED by t56
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ResourceNotFoundException("Invalid credentials");
         }
 
-        if (!encoder.matches(password, user.getPassword())) {
-            return null; // REQUIRED by t56
-        }
-
-        return user; // SUCCESS
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return repo.findByEmail(email).orElse(null);
+        return user;
     }
 
     @Override
     public User getUserById(Long id) {
-        return repo.findById(id).orElse(null);
+        return userRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public List<User> getAllUsers() {
-        return repo.findAll();
+        return userRepo.findAll();
     }
 }
