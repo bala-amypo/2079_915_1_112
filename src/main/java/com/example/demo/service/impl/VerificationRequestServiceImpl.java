@@ -3,9 +3,9 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.entity.VerificationRequest;
 import com.example.demo.entity.VerificationRequest.VerificationStatus;
-import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.repository.VerificationRequestRepository;
-import com.example.demo.service.VerificationRequestService;
+import com.example.demo.service.*;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,13 +16,21 @@ import java.util.List;
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
     private final VerificationRequestRepository verificationRepo;
-    private final CredentialRecordRepository credentialRepo;
+    private final CredentialRecordService credentialService;
+    private final VerificationRuleService ruleService;
+    private final AuditTrailService auditService;
 
+    // ✅ MUST MATCH TEST CONSTRUCTOR
     public VerificationRequestServiceImpl(
             VerificationRequestRepository verificationRepo,
-            CredentialRecordRepository credentialRepo) {
+            CredentialRecordService credentialService,
+            VerificationRuleService ruleService,
+            AuditTrailService auditService
+    ) {
         this.verificationRepo = verificationRepo;
-        this.credentialRepo = credentialRepo;
+        this.credentialService = credentialService;
+        this.ruleService = ruleService;
+        this.auditService = auditService;
     }
 
     @Override
@@ -34,15 +42,12 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     @Override
     public VerificationRequest processVerification(Long credentialId) {
 
-        CredentialRecord credential = credentialRepo
-                .findById(credentialId)
-                .orElse(null);
+        CredentialRecord credential = credentialService.getCredentialById(credentialId);
 
         VerificationRequest req = new VerificationRequest();
         req.setCredentialId(credentialId);
         req.setRequestedAt(LocalDateTime.now());
 
-        // ✅ TEST EXPECTATION LOGIC
         if (credential == null) {
             req.setStatus(VerificationStatus.FAILED);
         } else if (
