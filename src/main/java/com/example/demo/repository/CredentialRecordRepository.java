@@ -7,25 +7,24 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface CredentialRecordRepository extends JpaRepository<CredentialRecord, Long> {
 
-    // ---------- REQUIRED BY TESTS ----------
+    // ---------------- REQUIRED BY TESTS ----------------
 
-    Optional<List<CredentialRecord>> findByHolderId(Long holderId);
+    List<CredentialRecord> findByHolderId(Long holderId);
 
-    Optional<CredentialRecord> findByCredentialCode(String credentialCode);
+    CredentialRecord findByCredentialCode(String credentialCode);
 
-    // 🔥 KEEP THIS NAME — TESTS EXPECT IT
+    // 🔥 KEEP NAME, RETURN List (Mockito expects this)
     @Query("SELECT c FROM CredentialRecord c WHERE c.expiryDate < :date")
-    Optional<List<CredentialRecord>> findExpiredBefore(@Param("date") LocalDate date);
+    List<CredentialRecord> findExpiredBefore(@Param("date") LocalDate date);
 
-    // Used in HQL tests
+    // Used by HQL tests
     @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
     List<CredentialRecord> findByStatusUsingHql(@Param("status") String status);
 
-    // Used in search tests
+    // Used by search tests
     @Query("""
         SELECT c FROM CredentialRecord c
         WHERE c.issuer = :issuer
