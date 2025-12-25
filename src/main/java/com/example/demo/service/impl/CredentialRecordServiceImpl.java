@@ -10,53 +10,55 @@ import java.util.List;
 @Service
 public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    private final CredentialRecordRepository repository;
+    private final CredentialRecordRepository repo;
 
-    public CredentialRecordServiceImpl(CredentialRecordRepository repository) {
-        this.repository = repository;
+    public CredentialRecordServiceImpl(CredentialRecordRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     public CredentialRecord createCredential(CredentialRecord credential) {
-        return repository.save(credential);
+        if (credential.getStatus() == null) {
+            credential.setStatus("ACTIVE");
+        }
+        return repo.save(credential);
     }
 
     @Override
     public CredentialRecord getCredentialById(Long id) {
-        return repository.findById(id).orElse(null);
+        return repo.findById(id).orElse(null);
     }
 
     @Override
     public List<CredentialRecord> getAllCredentials() {
-        return repository.findAll();
+        return repo.findAll();
     }
 
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        return repository.findAll()
-                .stream()
-                .filter(c -> holderId.equals(c.getHolderId()))
-                .toList();
+        return repo.findByHolderId(holderId);
     }
 
     @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord credential) {
-        CredentialRecord existing = repository.findById(id).orElse(null);
+    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
+        CredentialRecord existing = repo.findById(id).orElse(null);
         if (existing == null) return null;
 
-        existing.setTitle(credential.getTitle());
-        existing.setIssuer(credential.getIssuer());
-        existing.setCredentialType(credential.getCredentialType());
-        existing.setStatus(credential.getStatus());
-        existing.setExpiryDate(credential.getExpiryDate());
-        existing.setBody(credential.getBody());
-        existing.setMetadataJson(credential.getMetadataJson());
+        // ✅ REQUIRED by test t14
+        existing.setCredentialCode(updated.getCredentialCode());
+        existing.setTitle(updated.getTitle());
+        existing.setIssuer(updated.getIssuer());
+        existing.setCredentialType(updated.getCredentialType());
+        existing.setExpiryDate(updated.getExpiryDate());
+        existing.setStatus(updated.getStatus());
+        existing.setBody(updated.getBody());
+        existing.setMetadataJson(updated.getMetadataJson());
 
-        return repository.save(existing);
+        return repo.save(existing);
     }
 
     @Override
     public void deleteCredential(Long id) {
-        repository.deleteById(id);
+        repo.deleteById(id);
     }
 }
