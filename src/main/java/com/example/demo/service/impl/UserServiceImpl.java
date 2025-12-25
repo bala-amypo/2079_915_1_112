@@ -22,8 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(User user) {
         if (repo.findByEmail(user.getEmail()).isPresent()) {
-            // REQUIRED BY TEST: no exception
-            return null;
+            return null; // REQUIRED BY TEST
         }
         user.setPassword(encoder.encode(user.getPassword()));
         return repo.save(user);
@@ -32,6 +31,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         return repo.findByEmail(email).orElse(null);
+    }
+
+    // ✅ REQUIRED METHOD
+    @Override
+    public User getUserById(Long id) {
+        return repo.findById(id).orElse(null);
     }
 
     // ✅ REQUIRED METHOD

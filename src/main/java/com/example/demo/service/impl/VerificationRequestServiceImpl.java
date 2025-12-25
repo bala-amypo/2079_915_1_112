@@ -24,30 +24,36 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         this.credentialRepo = credentialRepo;
     }
 
-    // ✅ REQUIRED METHOD
+    // ✅ REQUIRED BY INTERFACE
+    @Override
+    public VerificationRequest initiateVerification(VerificationRequest request) {
+        return requestRepo.save(request);
+    }
+
+    // ✅ REQUIRED BY INTERFACE
     @Override
     public VerificationRequest processVerification(Long credentialId) {
 
-        CredentialRecord credential = credentialRepo.findById(credentialId).orElse(null);
+        CredentialRecord credential =
+                credentialRepo.findById(credentialId).orElse(null);
+
         if (credential == null) return null;
 
         VerificationRequest req = new VerificationRequest();
         req.setCredentialId(credentialId);
 
-        // EXPIRED CASE
         if (credential.getExpiryDate() != null &&
             credential.getExpiryDate().isBefore(LocalDate.now())) {
 
-            req.setResult("FAILED");
+            req.setStatus("FAILED");
             return requestRepo.save(req);
         }
 
-        // SUCCESS CASE
-        req.setResult("SUCCESS");
+        req.setStatus("SUCCESS");
         return requestRepo.save(req);
     }
 
-    // ✅ REQUIRED METHOD
+    // ✅ REQUIRED BY INTERFACE
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
         return requestRepo.findByCredentialId(credentialId);
