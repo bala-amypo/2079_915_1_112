@@ -33,13 +33,27 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        return repository.findByHolderId(holderId);
+        return repository.findByHolderId(holderId)
+                .orElse(List.of());
     }
 
     @Override
     public CredentialRecord updateCredential(Long id, CredentialRecord credential) {
-        credential.setId(id);
-        return repository.save(credential);
+        CredentialRecord existing = repository.findById(id).orElse(null);
+        if (existing == null) {
+            return null;
+        }
+
+        existing.setCredentialCode(credential.getCredentialCode());
+        existing.setHolderId(credential.getHolderId());
+        existing.setIssuer(credential.getIssuer());
+        existing.setType(credential.getType());
+        existing.setExpiryDate(credential.getExpiryDate());
+        existing.setBody(credential.getBody());
+        existing.setMetadataJson(credential.getMetadataJson());
+        existing.setStatus(credential.getStatus());
+
+        return repository.save(existing);
     }
 
     @Override
