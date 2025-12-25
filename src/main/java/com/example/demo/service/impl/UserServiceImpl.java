@@ -22,26 +22,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public User registerUser(User user) {
         if (repo.findByEmail(user.getEmail()).isPresent()) {
-            return null; // REQUIRED BY TEST
+            return null; // REQUIRED by test t50
         }
         user.setPassword(encoder.encode(user.getPassword()));
         return repo.save(user);
     }
 
-    // ✅ REQUIRED METHOD
+    // ✅ FIXED METHOD
     @Override
-    public String loginUser(String email, String password) {
+    public User loginUser(String email, String password) {
 
         User user = repo.findByEmail(email).orElse(null);
         if (user == null) {
-            return null; // REQUIRED BY TEST
+            return null; // REQUIRED by t56
         }
 
         if (!encoder.matches(password, user.getPassword())) {
-            return null; // REQUIRED BY TEST
+            return null; // REQUIRED by t56
         }
 
-        return "TOKEN"; // Tests only check NOT NULL
+        return user; // SUCCESS
     }
 
     @Override
