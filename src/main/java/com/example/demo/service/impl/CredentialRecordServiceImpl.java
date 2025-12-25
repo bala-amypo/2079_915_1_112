@@ -47,7 +47,6 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         existing.setCredentialCode(credential.getCredentialCode());
         existing.setHolderId(credential.getHolderId());
         existing.setIssuer(credential.getIssuer());
-        existing.setType(credential.getType());
         existing.setExpiryDate(credential.getExpiryDate());
         existing.setBody(credential.getBody());
         existing.setMetadataJson(credential.getMetadataJson());
