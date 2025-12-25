@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "verification_request")
 public class VerificationRequest {
 
     @Id
@@ -16,6 +17,12 @@ public class VerificationRequest {
     private VerificationStatus status;
 
     private LocalDateTime requestedAt;
+
+    // ===== ENUM MUST BE PUBLIC =====
+    public static enum VerificationStatus {
+        SUCCESS,
+        FAILED
+    }
 
     // ===== GETTERS & SETTERS =====
 
@@ -50,16 +57,4 @@ public class VerificationRequest {
     public void setRequestedAt(LocalDateTime requestedAt) {
         this.requestedAt = requestedAt;
     }
-
-    // =============================
-}
-
-/**
- * ⚠️ DO NOT MOVE THIS
- * Enum is placed here because you are NOT allowed to create new files
- */
-enum VerificationStatus {
-    PENDING,
-    APPROVED,
-    REJECTED
 }
