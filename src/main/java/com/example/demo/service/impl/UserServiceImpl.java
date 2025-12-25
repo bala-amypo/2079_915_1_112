@@ -6,6 +6,8 @@ import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -19,12 +21,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(User user) {
-
         if (repo.findByEmail(user.getEmail()).isPresent()) {
-            // ✅ DO NOT throw exception
+            // REQUIRED BY TEST: no exception
             return null;
         }
-
         user.setPassword(encoder.encode(user.getPassword()));
         return repo.save(user);
     }
@@ -32,5 +32,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         return repo.findByEmail(email).orElse(null);
+    }
+
+    // ✅ REQUIRED METHOD
+    @Override
+    public List<User> getAllUsers() {
+        return repo.findAll();
     }
 }

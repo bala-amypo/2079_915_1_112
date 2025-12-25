@@ -1,35 +1,55 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialRecord;
+import com.example.demo.entity.VerificationRequest;
 import com.example.demo.repository.CredentialRecordRepository;
+import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.VerificationRequestService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private final CredentialRecordRepository repo;
+    private final VerificationRequestRepository requestRepo;
+    private final CredentialRecordRepository credentialRepo;
 
-    public VerificationRequestServiceImpl(CredentialRecordRepository repo) {
-        this.repo = repo;
+    public VerificationRequestServiceImpl(
+            VerificationRequestRepository requestRepo,
+            CredentialRecordRepository credentialRepo) {
+
+        this.requestRepo = requestRepo;
+        this.credentialRepo = credentialRepo;
     }
 
+    // ✅ REQUIRED METHOD
     @Override
-    public String processVerification(Long credentialId) {
+    public VerificationRequest processVerification(Long credentialId) {
 
-        CredentialRecord credential = repo.findById(credentialId).orElse(null);
+        CredentialRecord credential = credentialRepo.findById(credentialId).orElse(null);
         if (credential == null) return null;
 
+        VerificationRequest req = new VerificationRequest();
+        req.setCredentialId(credentialId);
+
+        // EXPIRED CASE
         if (credential.getExpiryDate() != null &&
             credential.getExpiryDate().isBefore(LocalDate.now())) {
 
-            credential.setStatus("EXPIRED");
-            repo.save(credential);
-            return "FAILED";
+            req.setResult("FAILED");
+            return requestRepo.save(req);
         }
 
-        return "SUCCESS";
+        // SUCCESS CASE
+        req.setResult("SUCCESS");
+        return requestRepo.save(req);
+    }
+
+    // ✅ REQUIRED METHOD
+    @Override
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return requestRepo.findByCredentialId(credentialId);
     }
 }
