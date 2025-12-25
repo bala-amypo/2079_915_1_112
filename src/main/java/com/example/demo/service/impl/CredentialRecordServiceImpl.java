@@ -5,75 +5,58 @@ import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    private final CredentialRecordRepository credentialRepo;
+    private final CredentialRecordRepository repository;
 
-    public CredentialRecordServiceImpl(CredentialRecordRepository credentialRepo) {
-        this.credentialRepo = credentialRepo;
+    public CredentialRecordServiceImpl(CredentialRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public CredentialRecord createCredential(CredentialRecord credential) {
-        return credentialRepo.save(credential);
+        return repository.save(credential);
     }
 
     @Override
     public CredentialRecord getCredentialById(Long id) {
-        return credentialRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Credential not found"));
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     public List<CredentialRecord> getAllCredentials() {
-        return credentialRepo.findAll();
+        return repository.findAll();
     }
 
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        return credentialRepo.findByHolderId(holderId);
+        return repository.findAll()
+                .stream()
+                .filter(c -> holderId.equals(c.getHolderId()))
+                .toList();
     }
 
     @Override
     public CredentialRecord updateCredential(Long id, CredentialRecord credential) {
-        CredentialRecord existing = getCredentialById(id);
+        CredentialRecord existing = repository.findById(id).orElse(null);
+        if (existing == null) return null;
 
-        existing.setCredentialName(credential.getCredentialName());
-        existing.setCredentialCode(credential.getCredentialCode());
-        existing.setExpiryDate(credential.getExpiryDate());
+        existing.setTitle(credential.getTitle());
         existing.setIssuer(credential.getIssuer());
+        existing.setCredentialType(credential.getCredentialType());
         existing.setStatus(credential.getStatus());
-        existing.setMetadataJson(credential.getMetadataJson());
+        existing.setExpiryDate(credential.getExpiryDate());
         existing.setBody(credential.getBody());
+        existing.setMetadataJson(credential.getMetadataJson());
 
-        return credentialRepo.save(existing);
+        return repository.save(existing);
     }
 
     @Override
     public void deleteCredential(Long id) {
-        credentialRepo.deleteById(id);
-    }
-
-    // ---------------- EXTRA METHODS USED BY TESTS ----------------
-
-    public CredentialRecord getByCredentialCode(String code) {
-        return credentialRepo.findByCredentialCode(code);
-    }
-
-    public List<CredentialRecord> findExpiredBefore(LocalDate date) {
-        // ❌ NO orElse() — repository already returns List
-        return credentialRepo.findExpiredBefore(date);
-    }
-
-    public List<CredentialRecord> findByStatusUsingHql(String status) {
-        return credentialRepo.findByStatusUsingHql(status);
-    }
-
-    public List<CredentialRecord> searchByIssuerAndType(String issuer, String type) {
-        return credentialRepo.searchByIssuerAndType(issuer, type);
+        repository.deleteById(id);
     }
 }
