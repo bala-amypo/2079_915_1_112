@@ -1,68 +1,69 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.User;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepo;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepo,
+    // Constructor used by Spring + tests
+    public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
-        this.userRepo = userRepo;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    // ================= REGISTER =================
     @Override
     public User registerUser(User user) {
 
-        if (userRepo.findByEmail(user.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepo.save(user);
+        return userRepository.save(user);
     }
 
+    // ================= LOGIN =================
     @Override
     public User loginUser(String email, String password) {
 
-        User user = userRepo.findByEmail(email)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new ResourceNotFoundException("Invalid credentials");
+            throw new RuntimeException("Invalid email or password");
         }
 
         return user;
     }
 
-    // ✅ MUST MATCH INTERFACE RETURN TYPE
+    // ================= FIND BY EMAIL =================
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepo.findByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // ================= FIND BY ID =================
     @Override
     public User getUserById(Long id) {
-        return userRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // ================= GET ALL USERS =================
     @Override
     public List<User> getAllUsers() {
-        return userRepo.findAll();
+        return userRepository.findAll();
     }
 }
