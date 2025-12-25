@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    // MUST match test constructor
+    // Constructor MUST match tests
     public AuthController(
             UserService userService,
             AuthenticationManager authenticationManager,
@@ -32,13 +32,18 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
 
-        User user = userService.registerUser(request);
+        // ✅ FIX: Convert DTO → ENTITY
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole("USER");
 
-        // ✅ FIX: pass individual fields
+        User savedUser = userService.registerUser(user);
+
         String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
         );
 
         return ResponseEntity.ok(token);
@@ -52,7 +57,6 @@ public class AuthController {
                 request.getPassword()
         );
 
-        // ✅ FIX: pass individual fields
         String token = jwtUtil.generateToken(
                 user.getId(),
                 user.getEmail(),
