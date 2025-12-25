@@ -6,6 +6,7 @@ import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,13 +16,8 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    // Constructor used by TESTS
-    public AuthController(UserService userService) {
-        this.userService = userService;
-        this.jwtUtil = null;
-    }
-
-    // Constructor used by Spring Boot
+    // ✅ SINGLE CONSTRUCTOR (Spring + Tests both work)
+    @Autowired
     public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
@@ -38,13 +34,11 @@ public class AuthController {
 
         User savedUser = userService.registerUser(user);
 
-        String token = (jwtUtil != null)
-                ? jwtUtil.generateToken(
-                        savedUser.getId(),
-                        savedUser.getEmail(),
-                        savedUser.getRole()
-                )
-                : "test-token";
+        String token = jwtUtil.generateToken(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
 
         return new JwtResponse(token);
     }
@@ -58,13 +52,11 @@ public class AuthController {
                 request.getPassword()
         );
 
-        String token = (jwtUtil != null)
-                ? jwtUtil.generateToken(
-                        user.getId(),
-                        user.getEmail(),
-                        user.getRole()
-                )
-                : "test-token";
+        String token = jwtUtil.generateToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole()
+        );
 
         return new JwtResponse(token);
     }
