@@ -1,20 +1,10 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
-
-@Entity
 public class CredentialHolderProfile {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true)
     private String email;
-
     private String organization;
-
-    private Boolean active;
+    private Boolean active = true;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
