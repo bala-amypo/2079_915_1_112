@@ -38,7 +38,7 @@ public class VerificationRequestServiceImpl
         VerificationRequest request =
                 requestRepo.findById(requestId).orElseThrow();
 
-        // find credential by ID from all credentials
+        // Find credential by ID
         CredentialRecord credential = credentialService.repository
                 .findAll()
                 .stream()

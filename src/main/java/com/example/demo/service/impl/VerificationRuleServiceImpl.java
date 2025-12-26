@@ -6,7 +6,8 @@ import com.example.demo.service.VerificationRuleService;
 
 public class VerificationRuleServiceImpl implements VerificationRuleService {
 
-    private final VerificationRuleRepository repository;
+    // 🔑 CHANGED: removed 'private'
+    final VerificationRuleRepository repository;
 
     public VerificationRuleServiceImpl(VerificationRuleRepository repository) {
         this.repository = repository;

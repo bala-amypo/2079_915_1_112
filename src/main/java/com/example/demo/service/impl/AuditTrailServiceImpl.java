@@ -9,7 +9,8 @@ import com.example.demo.service.AuditTrailService;
 
 public class AuditTrailServiceImpl implements AuditTrailService {
 
-    private final AuditTrailRecordRepository repository;
+    // 🔑 CHANGED: removed 'private'
+    final AuditTrailRecordRepository repository;
 
     public AuditTrailServiceImpl(AuditTrailRecordRepository repository) {
         this.repository = repository;
