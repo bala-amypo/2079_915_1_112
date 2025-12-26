@@ -1,64 +1,51 @@
 package com.example.demo.service.impl;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Service
 public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    private final CredentialRecordRepository repo;
+    private final CredentialRecordRepository repository;
 
-    public CredentialRecordServiceImpl(CredentialRecordRepository repo) {
-        this.repo = repo;
+    public CredentialRecordServiceImpl(CredentialRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public CredentialRecord createCredential(CredentialRecord credential) {
-        if (credential.getStatus() == null) {
-            credential.setStatus("ACTIVE");
+    public CredentialRecord createCredential(CredentialRecord record) {
+
+        if (record.getExpiryDate() != null &&
+                record.getExpiryDate().isBefore(LocalDate.now())) {
+            record.setStatus("EXPIRED");
+        } else if (record.getStatus() == null) {
+            record.setStatus("VALID");
         }
-        return repo.save(credential);
+
+        return repository.save(record);
     }
 
     @Override
-    public CredentialRecord getCredentialById(Long id) {
-        return repo.findById(id).orElse(null);
-    }
+    public CredentialRecord updateCredential(Long id, CredentialRecord update) {
+        CredentialRecord existing = repository.findById(id).orElseThrow();
 
-    @Override
-    public List<CredentialRecord> getAllCredentials() {
-        return repo.findAll();
+        if (update.getCredentialCode() != null) {
+            existing.setCredentialCode(update.getCredentialCode());
+        }
+
+        return repository.save(existing);
     }
 
     @Override
     public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
-        return repo.findByHolderId(holderId);
+        return repository.findByHolderId(holderId);
     }
 
     @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
-        CredentialRecord existing = repo.findById(id).orElse(null);
-        if (existing == null) return null;
-
-        // ✅ REQUIRED by test t14
-        existing.setCredentialCode(updated.getCredentialCode());
-        existing.setTitle(updated.getTitle());
-        existing.setIssuer(updated.getIssuer());
-        existing.setCredentialType(updated.getCredentialType());
-        existing.setExpiryDate(updated.getExpiryDate());
-        existing.setStatus(updated.getStatus());
-        existing.setBody(updated.getBody());
-        existing.setMetadataJson(updated.getMetadataJson());
-
-        return repo.save(existing);
-    }
-
-    @Override
-    public void deleteCredential(Long id) {
-        repo.deleteById(id);
+    public CredentialRecord getCredentialByCode(String code) {
+        return repository.findByCredentialCode(code).orElse(null);
     }
 }

@@ -1,69 +1,61 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.CredentialRecord;
-import com.example.demo.entity.VerificationRequest;
-import com.example.demo.entity.VerificationRequest.VerificationStatus;
-import com.example.demo.repository.VerificationRequestRepository;
-import com.example.demo.service.*;
-
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
-public class VerificationRequestServiceImpl implements VerificationRequestService {
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
+import com.example.demo.service.VerificationRequestService;
 
-    private final VerificationRequestRepository verificationRepo;
-    private final CredentialRecordService credentialService;
-    private final VerificationRuleService ruleService;
-    private final AuditTrailService auditService;
+public class VerificationRequestServiceImpl
+        implements VerificationRequestService {
 
-    // ✅ MUST MATCH TEST CONSTRUCTOR
+    private final VerificationRequestRepository requestRepo;
+    private final CredentialRecordRepository credentialRepo;
+    private final VerificationRuleRepository ruleRepo;
+    private final AuditTrailRecordRepository auditRepo;
+
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository verificationRepo,
-            CredentialRecordService credentialService,
-            VerificationRuleService ruleService,
-            AuditTrailService auditService
-    ) {
-        this.verificationRepo = verificationRepo;
-        this.credentialService = credentialService;
-        this.ruleService = ruleService;
-        this.auditService = auditService;
+            VerificationRequestRepository requestRepo,
+            CredentialRecordServiceImpl credentialService,
+            VerificationRuleServiceImpl ruleService,
+            AuditTrailServiceImpl auditService) {
+
+        this.requestRepo = requestRepo;
+        this.credentialRepo = credentialService.repository;
+        this.ruleRepo = ruleService.repository;
+        this.auditRepo = auditService.repository;
     }
 
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-        request.setRequestedAt(LocalDateTime.now());
-        return verificationRepo.save(request);
+        return requestRepo.save(request);
     }
 
     @Override
-    public VerificationRequest processVerification(Long credentialId) {
+    public VerificationRequest processVerification(Long requestId) {
+        VerificationRequest request =
+                requestRepo.findById(requestId).orElseThrow();
 
-        CredentialRecord credential = credentialService.getCredentialById(credentialId);
+        CredentialRecord credential = credentialRepo.findAll().stream()
+                .filter(c -> c.getId().equals(request.getCredentialId()))
+                .findFirst().orElse(null);
 
-        VerificationRequest req = new VerificationRequest();
-        req.setCredentialId(credentialId);
-        req.setRequestedAt(LocalDateTime.now());
-
-        if (credential == null) {
-            req.setStatus(VerificationStatus.FAILED);
-        } else if (
+        boolean expired = credential != null &&
                 credential.getExpiryDate() != null &&
-                credential.getExpiryDate().isBefore(LocalDate.now())
-        ) {
-            req.setStatus(VerificationStatus.FAILED);
-        } else {
-            req.setStatus(VerificationStatus.SUCCESS);
-        }
+                credential.getExpiryDate().isBefore(LocalDate.now());
 
-        return verificationRepo.save(req);
+        request.setStatus(expired ? "FAILED" : "SUCCESS");
+
+        AuditTrailRecord audit = new AuditTrailRecord();
+        audit.setCredentialId(request.getCredentialId());
+        auditRepo.save(audit);
+
+        return requestRepo.save(request);
     }
 
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return verificationRepo.findByCredentialId(credentialId);
+        return requestRepo.findByCredentialId(credentialId);
     }
 }
