@@ -1,35 +1,15 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "users")
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String fullName;
-
-    @Column(unique = true)
     private String email;
-
     private String password;
-
     private String role;
 
-    // ✅ Default constructor (required by JPA)
-    public User() {
-    }
+    public User() {}
 
-    // ✅ Constructor REQUIRED by TEST CASES
-    public User(Long id,
-                String fullName,
-                String email,
-                String password,
-                String role) {
-
+    public User(Long id, String fullName, String email, String password, String role) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
