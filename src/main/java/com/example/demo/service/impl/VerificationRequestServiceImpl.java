@@ -32,33 +32,35 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     }
 
     @Override
-    public VerificationRequest processVerification(Long requestId) {
+public VerificationRequest processVerification(Long requestId) {
 
-        VerificationRequest req =
-                requestRepo.findById(requestId).orElseThrow();
+    VerificationRequest req =
+            requestRepo.findById(requestId).orElseThrow();
 
-        // Tests mock credentialRepo.findAll(), so call through service indirectly
-        CredentialRecord credential = credentialService
-                .getCredentialsByHolder(null)
-                .stream()
-                .filter(c -> c.getId().equals(req.getCredentialId()))
-                .findFirst()
-                .orElse(null);
+    CredentialRecord credential = credentialRepo.findAll()
+            .stream()
+            .filter(c -> c.getId().equals(req.getCredentialId()))
+            .findFirst()
+            .orElse(null);
 
-        if (credential != null &&
-                credential.getExpiryDate() != null &&
-                credential.getExpiryDate().isBefore(LocalDate.now())) {
-            req.setStatus("FAILED");
-        } else {
-            req.setStatus("SUCCESS");
-        }
+    if (credential != null &&
+            credential.getExpiryDate() != null &&
+            credential.getExpiryDate().isBefore(LocalDate.now())) {
 
-        AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setCredentialId(req.getCredentialId());
-        auditService.logEvent(audit);
+        req.setStatus("FAILED");
 
-        return requestRepo.save(req);
+    } else {
+
+        req.setStatus("SUCCESS");
     }
+
+    AuditTrailRecord audit = new AuditTrailRecord();
+    audit.setCredentialId(req.getCredentialId());
+    auditService.logEvent(audit);
+
+    return requestRepo.save(req);
+}
+
 
     @Override
     public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
