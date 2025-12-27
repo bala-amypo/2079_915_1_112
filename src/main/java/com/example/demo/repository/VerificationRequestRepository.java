@@ -1,13 +1,10 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.VerificationRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.*;
+import com.example.demo.entity.*;
 
-import java.util.List;
-
-public interface VerificationRequestRepository extends JpaRepository<VerificationRequest, Long> {
-
-    // ✅ FIXED NAME
-    List<VerificationRequest> findByCredentialId(Long credentialId);
-
+public interface VerificationRequestRepository {
+    VerificationRequest save(VerificationRequest r);
+    Optional<VerificationRequest> findById(Long id);
+    List<VerificationRequest> findByCredentialId(Long cid);
 }

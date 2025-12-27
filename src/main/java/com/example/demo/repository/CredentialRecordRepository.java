@@ -1,21 +1,16 @@
-package com.example.demo.service;
-
-import com.example.demo.entity.CredentialRecord;
+package com.example.demo.repository;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
+import com.example.demo.entity.*;
 
-public interface CredentialRecordService {
-
-    CredentialRecord createCredential(CredentialRecord record);
-
-    CredentialRecord updateCredential(Long id, CredentialRecord record);
-
-    CredentialRecord getById(Long id);
-
-    List<CredentialRecord> getByHolderId(Long holderId);
-
-    CredentialRecord getByCode(String code);
-
-    List<CredentialRecord> findExpired(LocalDate date);
+public interface CredentialRecordRepository {
+    CredentialRecord save(CredentialRecord r);
+    Optional<CredentialRecord> findById(Long id);
+    List<CredentialRecord> findByHolderId(Long holderId);
+    Optional<CredentialRecord> findByCredentialCode(String code);
+    List<CredentialRecord> findExpiredBefore(LocalDate date);
+    List<CredentialRecord> findByStatusUsingHql(String status);
+    List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
+    List<CredentialRecord> findAll();
 }
