@@ -9,7 +9,8 @@ import com.example.demo.service.CredentialRecordService;
 
 public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    private final CredentialRecordRepository repository;
+    // 🔑 CHANGED: removed 'private'
+    final CredentialRecordRepository repository;
 
     public CredentialRecordServiceImpl(CredentialRecordRepository repository) {
         this.repository = repository;
