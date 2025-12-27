@@ -33,6 +33,28 @@ public class VerificationRequestServiceImpl
         this.ruleService = ruleService;
         this.auditService = auditService;
     }
+    @Override
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+    return repository.findByCredentialId(credentialId);
+}
+
+    @Override
+public VerificationRequest initiateVerification(VerificationRequest request) {
+
+    CredentialRecord credential =
+            credentialService.getById(
+                    request.getCredentialRecord().getId());
+
+    VerificationRequest saved = repository.save(request);
+
+    auditService.logEvent(
+            new AuditTrailRecord(
+                    "VERIFICATION_STARTED",
+                    credential.getId())
+    );
+
+    return saved;
+}
 
     @Override
     public VerificationRequest initiateVerification(
