@@ -3,7 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.entity.VerificationRequest;
 import com.example.demo.service.VerificationRequestService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/verifications")
 public class VerificationRequestController {
 
     private final VerificationRequestService service;
@@ -13,8 +16,18 @@ public class VerificationRequestController {
         this.service = service;
     }
 
+    // ================= INITIATE VERIFICATION =================
+    @PostMapping
     public ResponseEntity<VerificationRequest> initiate(
-            VerificationRequest request) {
+            @RequestBody VerificationRequest request) {
         return ResponseEntity.ok(service.initiateVerification(request));
+    }
+
+    // ================= GET VERIFICATIONS BY CREDENTIAL =================
+    @GetMapping("/credential/{credentialId}")
+    public ResponseEntity<?> getByCredential(
+            @PathVariable Long credentialId) {
+        return ResponseEntity.ok(
+                service.getRequestsByCredential(credentialId));
     }
 }
