@@ -1,18 +1,46 @@
 package com.example.demo.entity;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
+@Entity
 public class AuditTrailRecord {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String action;
+
     private Long credentialId;
-    private LocalDateTime loggedAt;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // ✅ REQUIRED by JPA
+    public AuditTrailRecord() {
+    }
 
-    public Long getCredentialId() { return credentialId; }
-    public void setCredentialId(Long credentialId) { this.credentialId = credentialId; }
+    // ✅ REQUIRED by service logic
+    public AuditTrailRecord(String action, Long credentialId) {
+        this.action = action;
+        this.credentialId = credentialId;
+    }
 
-    public LocalDateTime getLoggedAt() { return loggedAt; }
-    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
+    // getters & setters
+    public Long getId() {
+        return id;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public Long getCredentialId() {
+        return credentialId;
+    }
+
+    public void setCredentialId(Long credentialId) {
+        this.credentialId = credentialId;
+    }
 }
