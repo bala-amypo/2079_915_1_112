@@ -10,25 +10,37 @@ public class AuditTrailRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String event;
-    private Long referenceId;
-    private LocalDateTime loggedAt = LocalDateTime.now();
+    private Long credentialId;
 
-    public AuditTrailRecord() {}
+    private String action;
 
-    public AuditTrailRecord(String event, Long referenceId) {
-        this.event = event;
-        this.referenceId = referenceId;
+    private LocalDateTime loggedAt;
+
+    public Long getId() {
+        return id;
     }
 
-    public Long getId() { return id; }
+    public Long getCredentialId() {
+        return credentialId;
+    }
 
-    public String getEvent() { return event; }
-    public void setEvent(String event) { this.event = event; }
+    public void setCredentialId(Long credentialId) {
+        this.credentialId = credentialId;
+    }
 
-    public Long getReferenceId() { return referenceId; }
-    public void setReferenceId(Long referenceId) { this.referenceId = referenceId; }
+    public String getAction() {
+        return action;
+    }
 
-    public LocalDateTime getLoggedAt() { return loggedAt; }
-    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public LocalDateTime getLoggedAt() {
+        return loggedAt;
+    }
+
+    public void setLoggedAt(LocalDateTime loggedAt) {
+        this.loggedAt = loggedAt;
+    }
 }

@@ -12,6 +12,8 @@ public interface CredentialRecordRepository extends JpaRepository<CredentialReco
 
     CredentialRecord findByCredentialCode(String credentialCode);
 
+    List<CredentialRecord> findByHolderId(Long holderId);
+
     List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
     @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
