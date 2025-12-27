@@ -1,53 +1,61 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.AuditTrailRecord;
-import com.example.demo.entity.VerificationRequest;
-import com.example.demo.repository.VerificationRequestRepository;
-import com.example.demo.service.AuditTrailService;
-import com.example.demo.service.VerificationRequestService;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
-@Service
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
+import com.example.demo.service.VerificationRequestService;
+
 public class VerificationRequestServiceImpl
         implements VerificationRequestService {
 
-    private final VerificationRequestRepository repository;
-    private final AuditTrailService auditTrailService;
+    private final VerificationRequestRepository requestRepo;
+    private final CredentialRecordRepository credentialRepo;
+    private final VerificationRuleRepository ruleRepo;
+    private final AuditTrailRecordRepository auditRepo;
 
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository repository,
-            AuditTrailService auditTrailService) {
-        this.repository = repository;
-        this.auditTrailService = auditTrailService;
+            VerificationRequestRepository requestRepo,
+            CredentialRecordServiceImpl credentialService,
+            VerificationRuleServiceImpl ruleService,
+            AuditTrailServiceImpl auditService) {
+
+        this.requestRepo = requestRepo;
+        this.credentialRepo = credentialService.repository;
+        this.ruleRepo = ruleService.repository;
+        this.auditRepo = auditService.repository;
     }
 
     @Override
-    public VerificationRequest initiateVerification(
-            VerificationRequest request) {
+    public VerificationRequest initiateVerification(VerificationRequest request) {
+        return requestRepo.save(request);
+    }
 
-        request.setRequestedAt(LocalDateTime.now());
-        request.setStatus("PENDING");
+    @Override
+    public VerificationRequest processVerification(Long requestId) {
+        VerificationRequest request =
+                requestRepo.findById(requestId).orElseThrow();
 
-        VerificationRequest saved = repository.save(request);
+        CredentialRecord credential = credentialRepo.findAll().stream()
+                .filter(c -> c.getId().equals(request.getCredentialId()))
+                .findFirst().orElse(null);
+
+        boolean expired = credential != null &&
+                credential.getExpiryDate() != null &&
+                credential.getExpiryDate().isBefore(LocalDate.now());
+
+        request.setStatus(expired ? "FAILED" : "SUCCESS");
 
         AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setAction("VERIFICATION_REQUEST_CREATED");
-        audit.setCredentialId(
-                saved.getCredentialRecord().getId()
-        );
+        audit.setCredentialId(request.getCredentialId());
+        auditRepo.save(audit);
 
-        auditTrailService.logEvent(audit);
-
-        return saved;
+        return requestRepo.save(request);
     }
 
-
     @Override
-public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-    return repository.findByCredentialId(credentialId);
-}
-
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return requestRepo.findByCredentialId(credentialId);
+    }
 }
