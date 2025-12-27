@@ -17,10 +17,12 @@ public class AuditTrailRecord {
 
     private LocalDateTime timestamp;
 
+    // ✅ JPA requires NO-ARG constructor
     public AuditTrailRecord() {
         this.timestamp = LocalDateTime.now();
     }
 
+    // Getters & Setters
     public Long getId() {
         return id;
     }

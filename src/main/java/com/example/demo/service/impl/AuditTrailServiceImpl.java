@@ -17,8 +17,8 @@ public class AuditTrailServiceImpl implements AuditTrailService {
     }
 
     @Override
-    public AuditTrailRecord logEvent(AuditTrailRecord record) {
-        return repository.save(record);
+    public void logEvent(AuditTrailRecord record) {
+        repository.save(record);
     }
 
     @Override

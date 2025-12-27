@@ -1,50 +1,40 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.entity.VerificationRequest;
 import com.example.demo.repository.VerificationRequestRepository;
-import com.example.demo.service.*;
-
+import com.example.demo.service.AuditTrailService;
+import com.example.demo.service.VerificationRequestService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class VerificationRequestServiceImpl
-        implements VerificationRequestService {
+public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-    private final VerificationRequestRepository requestRepository;
-    private final CredentialRecordService credentialService;
+    private final VerificationRequestRepository repository;
     private final AuditTrailService auditTrailService;
 
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepository,
-            CredentialRecordService credentialService,
+            VerificationRequestRepository repository,
             AuditTrailService auditTrailService) {
-
-        this.requestRepository = requestRepository;
-        this.credentialService = credentialService;
+        this.repository = repository;
         this.auditTrailService = auditTrailService;
     }
 
     @Override
-    public VerificationRequest initiateVerification(
-            VerificationRequest request) {
+    public VerificationRequest initiateVerification(VerificationRequest request) {
 
-        // ✅ get credential safely
-        CredentialRecord credential =
-                credentialService.getById(
-                        request.getCredentialId());
+        request.setRequestedAt(LocalDateTime.now());
+        VerificationRequest saved = repository.save(request);
 
-        request.setStatus("PENDING");
-
-        VerificationRequest saved =
-                requestRepository.save(request);
-
-        // ✅ audit entry (NOW WORKS)
-        AuditTrailRecord audit =
-                new AuditTrailRecord(
-                        "VERIFICATION_STARTED",
-                        credential.getId());
+        // ✅ FIXED PART (NO constructor args)
+        AuditTrailRecord audit = new AuditTrailRecord();
+        audit.setAction("VERIFICATION_REQUEST_CREATED");
+        audit.setCredentialId(
+                saved.getCredentialRecord().getId()
+        );
 
         auditTrailService.logEvent(audit);
 
@@ -52,10 +42,7 @@ public class VerificationRequestServiceImpl
     }
 
     @Override
-    public List<VerificationRequest> getRequestsByCredential(
-            Long credentialId) {
-
-        return requestRepository
-                .findByCredentialId(credentialId);
+    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+        return repository.findByCredentialRecordId(credentialId);
     }
 }
