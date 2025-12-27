@@ -16,7 +16,7 @@ public class VerificationRequest {
 
     private LocalDateTime requestedAt;
 
-    // ✅ REQUIRED METHODS
+    // getters & setters
 
     public Long getId() {
         return id;
@@ -34,14 +34,6 @@ public class VerificationRequest {
         this.credentialId = credentialId;
     }
 
-    public LocalDateTime getRequestedAt() {
-        return requestedAt;
-    }
-
-    public void setRequestedAt(LocalDateTime requestedAt) {
-        this.requestedAt = requestedAt;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -50,10 +42,16 @@ public class VerificationRequest {
         this.status = status;
     }
 
-    // used by service
+    public LocalDateTime getRequestedAt() {
+        return requestedAt;
+    }
+
+    public void setRequestedAt(LocalDateTime requestedAt) {
+        this.requestedAt = requestedAt;
+    }
+
+    // ⚠️ FIXED: DO NOT call setId() on CredentialRecord
     public CredentialRecord getCredentialRecord() {
-        CredentialRecord c = new CredentialRecord();
-        c.setId(credentialId);
-        return c;
+        return null;
     }
 }

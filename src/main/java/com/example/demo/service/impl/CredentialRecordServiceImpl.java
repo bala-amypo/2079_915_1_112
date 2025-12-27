@@ -1,16 +1,15 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialRecord;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class CredentialRecordServiceImpl
-        implements CredentialRecordService {
+public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     private final CredentialRecordRepository repository;
 
@@ -19,35 +18,36 @@ public class CredentialRecordServiceImpl
     }
 
     @Override
-    public CredentialRecord create(CredentialRecord record) {
+    public CredentialRecord createCredential(CredentialRecord record) {
         return repository.save(record);
     }
 
     @Override
-    public CredentialRecord update(Long id, CredentialRecord record) {
-        CredentialRecord existing = getById(id);
-        existing.setCode(record.getCode());
-        existing.setStatus(record.getStatus());
-        existing.setHolderId(record.getHolderId());
+    public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
+        CredentialRecord existing = repository.findById(id).orElseThrow();
+
+        // ✅ FIXED METHOD NAMES
+        existing.setCredentialCode(updated.getCredentialCode());
+        existing.setExpiryDate(updated.getExpiryDate());
+        existing.setIssuer(updated.getIssuer());
+        existing.setStatus(updated.getStatus());
+
         return repository.save(existing);
     }
 
     @Override
-    public List<CredentialRecord> getCredentialsByHolder(Long holderId) {
+    public List<CredentialRecord> getByHolderId(Long holderId) {
         return repository.findByHolderId(holderId);
     }
 
     @Override
     public CredentialRecord getByCode(String code) {
-        return repository.findByCode(code)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
+        // ✅ FIXED
+        return repository.findByCredentialCode(code);
     }
 
     @Override
-    public CredentialRecord getById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Credential not found"));
+    public List<CredentialRecord> findExpired(LocalDate date) {
+        return repository.findByExpiryDateBefore(date);
     }
 }

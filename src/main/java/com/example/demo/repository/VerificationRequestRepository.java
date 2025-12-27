@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface VerificationRequestRepository extends JpaRepository<VerificationRequest, Long> {
 
+    // ✅ FIXED NAME
     List<VerificationRequest> findByCredentialId(Long credentialId);
 }
