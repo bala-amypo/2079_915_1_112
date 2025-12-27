@@ -1,16 +1,15 @@
 package com.example.demo.repository;
 
-import java.time.LocalDate;
-import java.util.*;
-import com.example.demo.entity.*;
+import com.example.demo.entity.CredentialRecord;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CredentialRecordRepository {
-    CredentialRecord save(CredentialRecord r);
-    Optional<CredentialRecord> findById(Long id);
+import java.util.List;
+import java.util.Optional;
+
+public interface CredentialRecordRepository
+        extends JpaRepository<CredentialRecord, Long> {
+
+    Optional<CredentialRecord> findByCode(String code);
+
     List<CredentialRecord> findByHolderId(Long holderId);
-    Optional<CredentialRecord> findByCredentialCode(String code);
-    List<CredentialRecord> findExpiredBefore(LocalDate date);
-    List<CredentialRecord> findByStatusUsingHql(String status);
-    List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
-    List<CredentialRecord> findAll();
 }
