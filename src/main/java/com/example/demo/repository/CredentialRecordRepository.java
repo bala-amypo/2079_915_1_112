@@ -1,21 +1,21 @@
-package com.example.demo.repository;
+package com.example.demo.service;
 
 import com.example.demo.entity.CredentialRecord;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public interface CredentialRecordRepository extends JpaRepository<CredentialRecord, Long> {
+public interface CredentialRecordService {
 
-    CredentialRecord findByCredentialCode(String credentialCode);
+    CredentialRecord createCredential(CredentialRecord record);
 
-    // ✅ alias for service compatibility
-    default CredentialRecord findByCode(String code) {
-        return findByCredentialCode(code);
-    }
+    CredentialRecord updateCredential(Long id, CredentialRecord record);
 
-    List<CredentialRecord> findByHolderId(Long holderId);
+    CredentialRecord getById(Long id);
 
-    List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
+    List<CredentialRecord> getByHolderId(Long holderId);
+
+    CredentialRecord getByCode(String code);
+
+    List<CredentialRecord> findExpired(LocalDate date);
 }

@@ -26,13 +26,18 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     public CredentialRecord updateCredential(Long id, CredentialRecord updated) {
         CredentialRecord existing = repository.findById(id).orElseThrow();
 
-        // ✅ FIXED METHOD NAMES
         existing.setCredentialCode(updated.getCredentialCode());
         existing.setExpiryDate(updated.getExpiryDate());
         existing.setIssuer(updated.getIssuer());
         existing.setStatus(updated.getStatus());
 
         return repository.save(existing);
+    }
+
+    // ✅ MISSING METHOD — FIXED
+    @Override
+    public CredentialRecord getById(Long id) {
+        return repository.findById(id).orElseThrow();
     }
 
     @Override
@@ -42,7 +47,6 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
 
     @Override
     public CredentialRecord getByCode(String code) {
-        // ✅ FIXED
         return repository.findByCredentialCode(code);
     }
 
