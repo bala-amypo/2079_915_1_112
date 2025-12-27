@@ -1,33 +1,37 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "verification_request")
 public class VerificationRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ store only credentialId (NO relationship confusion)
-    private Long credentialId;
+    // 🔗 Relation to CredentialRecord
+    @ManyToOne
+    @JoinColumn(name = "credential_id")
+    private CredentialRecord credentialRecord;
 
     private String status;
 
-    public VerificationRequest() {
-    }
+    private LocalDateTime requestedAt;
 
-    // getters & setters
+    public VerificationRequest() {}
+
     public Long getId() {
         return id;
     }
 
-    public Long getCredentialId() {
-        return credentialId;
+    public CredentialRecord getCredentialRecord() {
+        return credentialRecord;
     }
 
-    public void setCredentialId(Long credentialId) {
-        this.credentialId = credentialId;
+    public void setCredentialRecord(CredentialRecord credentialRecord) {
+        this.credentialRecord = credentialRecord;
     }
 
     public String getStatus() {
@@ -36,5 +40,13 @@ public class VerificationRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getRequestedAt() {
+        return requestedAt;
+    }
+
+    public void setRequestedAt(LocalDateTime requestedAt) {
+        this.requestedAt = requestedAt;
     }
 }

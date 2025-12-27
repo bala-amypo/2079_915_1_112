@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class VerificationRequestServiceImpl implements VerificationRequestService {
+public class VerificationRequestServiceImpl
+        implements VerificationRequestService {
 
     private final VerificationRequestRepository repository;
     private final AuditTrailService auditTrailService;
@@ -24,12 +25,14 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     }
 
     @Override
-    public VerificationRequest initiateVerification(VerificationRequest request) {
+    public VerificationRequest initiateVerification(
+            VerificationRequest request) {
 
         request.setRequestedAt(LocalDateTime.now());
+        request.setStatus("PENDING");
+
         VerificationRequest saved = repository.save(request);
 
-        // ✅ FIXED PART (NO constructor args)
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setAction("VERIFICATION_REQUEST_CREATED");
         audit.setCredentialId(
@@ -42,7 +45,9 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
     }
 
     @Override
-    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+    public List<VerificationRequest> getRequestsByCredential(
+            Long credentialId) {
+
         return repository.findByCredentialRecordId(credentialId);
     }
 }

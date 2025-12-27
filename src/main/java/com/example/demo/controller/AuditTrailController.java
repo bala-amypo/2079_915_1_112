@@ -18,14 +18,17 @@ public class AuditTrailController {
     }
 
     @PostMapping
-    public ResponseEntity<AuditTrailRecord> log(
-            @RequestBody AuditTrailRecord record) {
-        return ResponseEntity.ok(service.logEvent(record));
+    public ResponseEntity<String> log(@RequestBody AuditTrailRecord record) {
+        service.logEvent(record); // ✅ NO return value
+        return ResponseEntity.ok("Audit logged successfully");
     }
 
     @GetMapping("/credential/{credentialId}")
     public ResponseEntity<List<AuditTrailRecord>> getByCredential(
             @PathVariable Long credentialId) {
-        return ResponseEntity.ok(service.getLogsByCredential(credentialId));
+
+        return ResponseEntity.ok(
+                service.getLogsByCredential(credentialId)
+        );
     }
 }

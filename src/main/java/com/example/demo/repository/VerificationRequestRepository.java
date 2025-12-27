@@ -8,5 +8,6 @@ import java.util.List;
 public interface VerificationRequestRepository
         extends JpaRepository<VerificationRequest, Long> {
 
-    List<VerificationRequest> findByCredentialId(Long credentialId);
+    // ✅ REQUIRED METHOD
+    List<VerificationRequest> findByCredentialRecordId(Long credentialId);
 }
