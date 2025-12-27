@@ -11,5 +11,6 @@ public interface CredentialRecordRepository
 
     Optional<CredentialRecord> findByCode(String code);
 
+    // ✅ THIS FIXES YOUR ERROR
     List<CredentialRecord> findByHolderId(Long holderId);
 }
