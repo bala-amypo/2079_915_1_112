@@ -1,20 +1,11 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.entity.VerificationRule;
-import com.example.demo.repository.VerificationRuleRepository;
-import com.example.demo.service.VerificationRuleService;
+import java.util.List;
 
-public class VerificationRuleServiceImpl implements VerificationRuleService {
+public interface VerificationRuleService {
 
-    // 🔑 CHANGED: removed 'private'
-    final VerificationRuleRepository repository;
+    VerificationRule createRule(VerificationRule rule);
 
-    public VerificationRuleServiceImpl(VerificationRuleRepository repository) {
-        this.repository = repository;
-    }
-
-    @Override
-    public VerificationRule createRule(VerificationRule rule) {
-        return repository.save(rule);
-    }
+    List<VerificationRule> getAllRules();
 }
