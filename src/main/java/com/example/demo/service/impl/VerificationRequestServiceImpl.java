@@ -55,27 +55,6 @@ public VerificationRequest initiateVerification(VerificationRequest request) {
 
     return saved;
 }
-
-    @Override
-    public VerificationRequest initiateVerification(
-            VerificationRequest request) {
-
-        CredentialRecord credential =
-                credentialService.getById(
-                        request.getCredential().getId());
-
-        List<VerificationRule> rules =
-                ruleService.getAllRules();
-
-        VerificationRequest saved =
-                repository.save(request);
-
-        auditService.logEvent(
-                new AuditTrailRecord(
-                        "VERIFICATION_STARTED",
-                        credential.getId())
-        );
-
-        return saved;
-    }
 }
+
+   

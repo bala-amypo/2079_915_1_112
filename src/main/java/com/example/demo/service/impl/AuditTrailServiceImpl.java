@@ -6,7 +6,8 @@ import java.util.List;
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.service.AuditTrailService;
-
+import org.springframework.stereotype.Service;
+@Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
     // 🔑 CHANGED: removed 'private'
