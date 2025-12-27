@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.CredentialRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -16,11 +18,16 @@ public interface CredentialRecordRepository
 
     List<CredentialRecord> findByHolderId(Long holderId);
 
-    // ✅ FIXED METHOD NAME
+    // ✅ Correct derived query
     List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
-    // Used by tests (HQL)
-    List<CredentialRecord> findByStatusUsingHql(String status);
+    // ✅ FIXED: Explicit JPQL (HQL) query
+    @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
+    List<CredentialRecord> findByStatusUsingHql(@Param("status") String status);
 
-    List<CredentialRecord> searchByIssuerAndType(String issuer, String type);
+    // ✅ FIXED: Explicit JPQL query
+    @Query("SELECT c FROM CredentialRecord c WHERE c.issuer = :issuer AND c.credentialType = :type")
+    List<CredentialRecord> searchByIssuerAndType(
+            @Param("issuer") String issuer,
+            @Param("type") String type);
 }
