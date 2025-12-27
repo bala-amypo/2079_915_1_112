@@ -6,6 +6,8 @@ import java.util.List;
 import com.example.demo.entity.*;
 import com.example.demo.repository.VerificationRequestRepository;
 import com.example.demo.service.VerificationRequestService;
+import org.springframework.stereotype.Service;
+@Service
 
 public class VerificationRequestServiceImpl
         implements VerificationRequestService {
