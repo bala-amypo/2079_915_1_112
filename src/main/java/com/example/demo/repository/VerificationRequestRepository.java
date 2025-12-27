@@ -5,9 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface VerificationRequestRepository
-        extends JpaRepository<VerificationRequest, Long> {
+public interface VerificationRequestRepository extends JpaRepository<VerificationRequest, Long> {
 
-    // ✅ REQUIRED METHOD
-    List<VerificationRequest> findByCredentialRecordId(Long credentialId);
+    List<VerificationRequest> findByCredentialId(Long credentialId);
 }

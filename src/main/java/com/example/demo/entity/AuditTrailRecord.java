@@ -4,54 +4,31 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "audit_trail")
 public class AuditTrailRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String action;
+    private String event;
+    private Long referenceId;
+    private LocalDateTime loggedAt = LocalDateTime.now();
 
-    private Long credentialId;
+    public AuditTrailRecord() {}
 
-    private LocalDateTime timestamp;
-
-    // ✅ JPA requires NO-ARG constructor
-    public AuditTrailRecord() {
-        this.timestamp = LocalDateTime.now();
+    public AuditTrailRecord(String event, Long referenceId) {
+        this.event = event;
+        this.referenceId = referenceId;
     }
 
-    // Getters & Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getEvent() { return event; }
+    public void setEvent(String event) { this.event = event; }
 
-    public String getAction() {
-        return action;
-    }
+    public Long getReferenceId() { return referenceId; }
+    public void setReferenceId(Long referenceId) { this.referenceId = referenceId; }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public Long getCredentialId() {
-        return credentialId;
-    }
-
-    public void setCredentialId(Long credentialId) {
-        this.credentialId = credentialId;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
+    public LocalDateTime getLoggedAt() { return loggedAt; }
+    public void setLoggedAt(LocalDateTime loggedAt) { this.loggedAt = loggedAt; }
 }

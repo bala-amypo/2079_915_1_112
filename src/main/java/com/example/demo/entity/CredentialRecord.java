@@ -1,55 +1,51 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.*;
 
 @Entity
-@Table(name = "credential_record")
 public class CredentialRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long holderId;
-
-    @Column(unique = true, nullable = false)
-    private String code;
-
+    private String credentialCode;
+    private String title;
+    private String issuer;
+    private String credentialType;
+    private String metadataJson;
+    private LocalDate expiryDate;
     private String status;
 
-    public CredentialRecord() {
-    }
+    @ManyToMany
+    private List<VerificationRule> rules = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getCredentialCode() { return credentialCode; }
+    public void setCredentialCode(String credentialCode) { this.credentialCode = credentialCode; }
 
-    public Long getHolderId() {
-        return holderId;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setHolderId(Long holderId) {
-        this.holderId = holderId;
-    }
+    public String getIssuer() { return issuer; }
+    public void setIssuer(String issuer) { this.issuer = issuer; }
 
-    public String getCode() {
-        return code;
-    }
+    public String getCredentialType() { return credentialType; }
+    public void setCredentialType(String credentialType) { this.credentialType = credentialType; }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    public String getMetadataJson() { return metadataJson; }
+    public void setMetadataJson(String metadataJson) { this.metadataJson = metadataJson; }
 
-    public String getStatus() {
-        return status;
-    }
+    public LocalDate getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(LocalDate expiryDate) { this.expiryDate = expiryDate; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public List<VerificationRule> getRules() { return rules; }
+    public void setRules(List<VerificationRule> rules) { this.rules = rules; }
 }
