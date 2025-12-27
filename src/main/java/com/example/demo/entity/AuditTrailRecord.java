@@ -1,11 +1,26 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "audit_trail_records")
 public class AuditTrailRecord {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long credentialId;
+
     private LocalDateTime loggedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (loggedAt == null) {
+            loggedAt = LocalDateTime.now();
+        }
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

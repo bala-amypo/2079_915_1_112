@@ -1,8 +1,11 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.CredentialHolderProfile;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-public interface CredentialHolderProfileRepository
-        extends JpaRepository<CredentialHolderProfile, Long> {
+public interface CredentialHolderProfileRepository {
+
+    CredentialHolderProfile save(CredentialHolderProfile profile);
+
+    Optional<CredentialHolderProfile> findById(Long id);
 }

@@ -1,9 +1,11 @@
 package com.example.demo.repository;
 
-import java.util.*;
-import com.example.demo.entity.*;
+import com.example.demo.entity.AuditTrailRecord;
+import java.util.List;
 
 public interface AuditTrailRecordRepository {
-    AuditTrailRecord save(AuditTrailRecord r);
-    List<AuditTrailRecord> findByCredentialId(Long id);
+
+    AuditTrailRecord save(AuditTrailRecord record);
+
+    List<AuditTrailRecord> findByCredentialId(Long credentialId);
 }

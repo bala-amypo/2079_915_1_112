@@ -1,9 +1,11 @@
 package com.example.demo.repository;
 
-import java.util.*;
-import com.example.demo.entity.*;
+import com.example.demo.entity.VerificationRule;
+import java.util.List;
 
 public interface VerificationRuleRepository {
-    VerificationRule save(VerificationRule r);
+
+    VerificationRule save(VerificationRule rule);
+
     List<VerificationRule> findByActiveTrue();
 }
