@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     // ===== PASSWORD ENCODER =====
@@ -17,6 +18,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     // ===== AUTHENTICATION MANAGER =====
     @Bean
@@ -30,4 +32,21 @@ public class SecurityConfig {
 
         return new ProviderManager(provider);
     }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/auth/**",
+                "/swagger-ui/**",
+                "/v3/api-docs/**"
+            ).permitAll()
+            .anyRequest().authenticated()
+        );
+
+    return http.build();
+}
+
 }
