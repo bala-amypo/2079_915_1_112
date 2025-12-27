@@ -50,4 +50,10 @@ public class VerificationRequestServiceImpl
 
         return repository.findByCredentialRecordId(credentialId);
     }
+
+    @Override
+public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
+    return repository.findByCredentialId(credentialId);
+}
+
 }

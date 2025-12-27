@@ -9,4 +9,5 @@ public interface VerificationRequestRepository extends JpaRepository<Verificatio
 
     // ✅ FIXED NAME
     List<VerificationRequest> findByCredentialId(Long credentialId);
+
 }
