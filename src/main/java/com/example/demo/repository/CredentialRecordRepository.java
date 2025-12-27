@@ -1,16 +1,16 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.CredentialRecord;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Repository;
+
 @Repository
-public interface CredentialRecordRepository {
-
-    CredentialRecord save(CredentialRecord record);
-
-    Optional<CredentialRecord> findById(Long id);
+public interface CredentialRecordRepository
+        extends JpaRepository<CredentialRecord, Long> {
 
     List<CredentialRecord> findByHolderId(Long holderId);
 
@@ -18,9 +18,9 @@ public interface CredentialRecordRepository {
 
     List<CredentialRecord> findExpiredBefore(LocalDate date);
 
+    // custom names used in tests
     List<CredentialRecord> findByStatusUsingHql(String status);
 
-    List<CredentialRecord> searchByIssuerAndType(String issuer, String credentialType);
-
-    List<CredentialRecord> findAll();
+    List<CredentialRecord> searchByIssuerAndType(
+            String issuer, String credentialType);
 }
