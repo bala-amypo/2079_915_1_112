@@ -1,8 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "audit_trail")
 public class AuditTrailRecord {
 
     @Id
@@ -13,19 +15,18 @@ public class AuditTrailRecord {
 
     private Long credentialId;
 
-    // ✅ REQUIRED by JPA
+    private LocalDateTime timestamp;
+
     public AuditTrailRecord() {
+        this.timestamp = LocalDateTime.now();
     }
 
-    // ✅ REQUIRED by service logic
-    public AuditTrailRecord(String action, Long credentialId) {
-        this.action = action;
-        this.credentialId = credentialId;
-    }
-
-    // getters & setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getAction() {
@@ -42,5 +43,13 @@ public class AuditTrailRecord {
 
     public void setCredentialId(Long credentialId) {
         this.credentialId = credentialId;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

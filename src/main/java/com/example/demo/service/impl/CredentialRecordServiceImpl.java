@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.CredentialRecord;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CredentialRecordServiceImpl implements CredentialRecordService {
+public class CredentialRecordServiceImpl
+        implements CredentialRecordService {
 
     private final CredentialRecordRepository repository;
 
@@ -17,15 +19,16 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord createCredential(CredentialRecord record) {
+    public CredentialRecord create(CredentialRecord record) {
         return repository.save(record);
     }
 
     @Override
-    public CredentialRecord updateCredential(Long id, CredentialRecord update) {
+    public CredentialRecord update(Long id, CredentialRecord record) {
         CredentialRecord existing = getById(id);
-        existing.setStatus(update.getStatus());
-        existing.setExpiryDate(update.getExpiryDate());
+        existing.setCode(record.getCode());
+        existing.setStatus(record.getStatus());
+        existing.setHolderId(record.getHolderId());
         return repository.save(existing);
     }
 
@@ -35,14 +38,16 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
     }
 
     @Override
-    public CredentialRecord getCredentialByCode(String code) {
+    public CredentialRecord getByCode(String code) {
         return repository.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Credential not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Credential not found"));
     }
 
     @Override
     public CredentialRecord getById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Credential not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Credential not found"));
     }
 }

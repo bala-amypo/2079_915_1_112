@@ -20,29 +20,25 @@ public class CredentialRecordController {
     @PostMapping
     public ResponseEntity<CredentialRecord> create(
             @RequestBody CredentialRecord record) {
-
-        return ResponseEntity.ok(service.createCredential(record));
+        return ResponseEntity.ok(service.create(record));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CredentialRecord> update(
             @PathVariable Long id,
-            @RequestBody CredentialRecord update) {
-
-        return ResponseEntity.ok(service.updateCredential(id, update));
+            @RequestBody CredentialRecord record) {
+        return ResponseEntity.ok(service.update(id, record));
     }
 
     @GetMapping("/holder/{holderId}")
     public ResponseEntity<List<CredentialRecord>> getByHolder(
             @PathVariable Long holderId) {
-
         return ResponseEntity.ok(service.getCredentialsByHolder(holderId));
     }
 
     @GetMapping("/code/{code}")
     public ResponseEntity<CredentialRecord> getByCode(
             @PathVariable String code) {
-
-        return ResponseEntity.ok(service.getCredentialByCode(code));
+        return ResponseEntity.ok(service.getByCode(code));
     }
 }
