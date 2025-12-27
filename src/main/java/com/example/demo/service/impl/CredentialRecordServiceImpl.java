@@ -3,10 +3,11 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@Service
 public class CredentialRecordServiceImpl
         implements CredentialRecordService {
 

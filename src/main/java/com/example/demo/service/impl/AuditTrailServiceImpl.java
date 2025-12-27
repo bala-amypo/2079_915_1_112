@@ -1,19 +1,20 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.service.AuditTrailService;
+import org.springframework.stereotype.Service;
 
-public class AuditTrailServiceImpl implements AuditTrailService {
+import java.time.LocalDateTime;
+import java.util.List;
+@Service
+public class AuditTrailServiceImpl
+        implements AuditTrailService {
 
-    // 🔑 CHANGED: removed 'private'
-    final AuditTrailRecordRepository repository;
+    private final AuditTrailRecordRepository repo;
 
-    public AuditTrailServiceImpl(AuditTrailRecordRepository repository) {
-        this.repository = repository;
+    public AuditTrailServiceImpl(AuditTrailRecordRepository repo) {
+        this.repo = repo;
     }
 
     @Override
@@ -21,11 +22,11 @@ public class AuditTrailServiceImpl implements AuditTrailService {
         if (record.getLoggedAt() == null) {
             record.setLoggedAt(LocalDateTime.now());
         }
-        return repository.save(record);
+        return repo.save(record);
     }
 
     @Override
     public List<AuditTrailRecord> getLogsByCredential(Long credentialId) {
-        return repository.findByCredentialId(credentialId);
+        return repo.findByCredentialId(credentialId);
     }
 }
