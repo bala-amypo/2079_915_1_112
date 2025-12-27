@@ -1,61 +1,55 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDate;
+import com.example.demo.entity.AuditTrailRecord;
+import com.example.demo.entity.CredentialRecord;
+import com.example.demo.entity.VerificationRequest;
+import com.example.demo.entity.VerificationRule;
+import com.example.demo.repository.VerificationRequestRepository;
+import com.example.demo.service.AuditTrailService;
+import com.example.demo.service.CredentialRecordService;
+import com.example.demo.service.VerificationRequestService;
+import com.example.demo.service.VerificationRuleService;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
-import com.example.demo.service.VerificationRequestService;
+@Service
+public class VerificationRequestServiceImpl implements VerificationRequestService {
 
-public class VerificationRequestServiceImpl
-        implements VerificationRequestService {
-
-    private final VerificationRequestRepository requestRepo;
-    private final CredentialRecordRepository credentialRepo;
-    private final VerificationRuleRepository ruleRepo;
-    private final AuditTrailRecordRepository auditRepo;
+    private final VerificationRequestRepository repository;
+    private final CredentialRecordService credentialService;
+    private final VerificationRuleService ruleService;
+    private final AuditTrailService auditService;
 
     public VerificationRequestServiceImpl(
-            VerificationRequestRepository requestRepo,
-            CredentialRecordServiceImpl credentialService,
-            VerificationRuleServiceImpl ruleService,
-            AuditTrailServiceImpl auditService) {
+            VerificationRequestRepository repository,
+            CredentialRecordService credentialService,
+            VerificationRuleService ruleService,
+            AuditTrailService auditService) {
 
-        this.requestRepo = requestRepo;
-        this.credentialRepo = credentialService.repository;
-        this.ruleRepo = ruleService.repository;
-        this.auditRepo = auditService.repository;
+        this.repository = repository;
+        this.credentialService = credentialService;
+        this.ruleService = ruleService;
+        this.auditService = auditService;
     }
 
     @Override
     public VerificationRequest initiateVerification(VerificationRequest request) {
-        return requestRepo.save(request);
-    }
 
-    @Override
-    public VerificationRequest processVerification(Long requestId) {
-        VerificationRequest request =
-                requestRepo.findById(requestId).orElseThrow();
+        CredentialRecord credential =
+                credentialService.getById(request.getCredential().getId());
 
-        CredentialRecord credential = credentialRepo.findAll().stream()
-                .filter(c -> c.getId().equals(request.getCredentialId()))
-                .findFirst().orElse(null);
+        List<VerificationRule> rules =
+                ruleService.getAllRules();
 
-        boolean expired = credential != null &&
-                credential.getExpiryDate() != null &&
-                credential.getExpiryDate().isBefore(LocalDate.now());
+        // business logic here
 
-        request.setStatus(expired ? "FAILED" : "SUCCESS");
+        VerificationRequest saved = repository.save(request);
 
-        AuditTrailRecord audit = new AuditTrailRecord();
-        audit.setCredentialId(request.getCredentialId());
-        auditRepo.save(audit);
+        auditService.logEvent(
+                new AuditTrailRecord("VERIFICATION_STARTED", credential.getId())
+        );
 
-        return requestRepo.save(request);
-    }
-
-    @Override
-    public List<VerificationRequest> getRequestsByCredential(Long credentialId) {
-        return requestRepo.findByCredentialId(credentialId);
+        return saved;
     }
 }
