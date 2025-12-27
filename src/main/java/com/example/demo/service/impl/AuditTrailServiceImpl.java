@@ -1,17 +1,16 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.example.demo.entity.AuditTrailRecord;
 import com.example.demo.repository.AuditTrailRecordRepository;
 import com.example.demo.service.AuditTrailService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
-    // 🔑 CHANGED: removed 'private'
-    final AuditTrailRecordRepository repository;
+    private final AuditTrailRecordRepository repository;
 
     public AuditTrailServiceImpl(AuditTrailRecordRepository repository) {
         this.repository = repository;
@@ -19,9 +18,6 @@ public class AuditTrailServiceImpl implements AuditTrailService {
 
     @Override
     public AuditTrailRecord logEvent(AuditTrailRecord record) {
-        if (record.getLoggedAt() == null) {
-            record.setLoggedAt(LocalDateTime.now());
-        }
         return repository.save(record);
     }
 
