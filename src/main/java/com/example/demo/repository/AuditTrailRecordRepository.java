@@ -1,9 +1,12 @@
 package com.example.demo.repository;
 
-import java.util.*;
-import com.example.demo.entity.*;
+import com.example.demo.entity.AuditTrailRecord;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AuditTrailRecordRepository {
-    AuditTrailRecord save(AuditTrailRecord r);
-    List<AuditTrailRecord> findByCredentialId(Long id);
+import java.util.List;
+
+public interface AuditTrailRecordRepository
+        extends JpaRepository<AuditTrailRecord, Long> {
+
+    List<AuditTrailRecord> findByCredentialId(Long credentialId);
 }
