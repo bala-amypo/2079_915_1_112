@@ -8,29 +8,29 @@ import com.example.demo.service.CredentialHolderProfileService;
 public class CredentialHolderProfileServiceImpl
         implements CredentialHolderProfileService {
 
-    private final CredentialHolderProfileRepository repository;
+    private final CredentialHolderProfileRepository repo;
 
     public CredentialHolderProfileServiceImpl(
-            CredentialHolderProfileRepository repository) {
-        this.repository = repository;
+            CredentialHolderProfileRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     public CredentialHolderProfile createHolder(CredentialHolderProfile profile) {
-        return repository.save(profile);
+        return repo.save(profile);
     }
 
     @Override
     public CredentialHolderProfile getHolderById(Long id) {
-        return repository.findById(id)
+        return repo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Holder not found"));
     }
 
     @Override
     public CredentialHolderProfile updateStatus(Long id, boolean active) {
-        CredentialHolderProfile profile = getHolderById(id);
-        profile.setActive(active);
-        return repository.save(profile);
+        CredentialHolderProfile p = getHolderById(id);
+        p.setActive(active);
+        return repo.save(p);
     }
 }
