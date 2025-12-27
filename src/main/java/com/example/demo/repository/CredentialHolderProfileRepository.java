@@ -1,10 +1,10 @@
 package com.example.demo.repository;
 
-import java.time.LocalDate;
-import java.util.*;
-import com.example.demo.entity.*;
+import com.example.demo.entity.CredentialHolderProfile;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CredentialHolderProfileRepository {
-    Optional<CredentialHolderProfile> findById(Long id);
-    CredentialHolderProfile save(CredentialHolderProfile p);
+@Repository
+public interface CredentialHolderProfileRepository
+        extends JpaRepository<CredentialHolderProfile, Long> {
 }
