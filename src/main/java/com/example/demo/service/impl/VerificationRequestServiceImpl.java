@@ -4,18 +4,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.demo.entity.*;
-import com.example.demo.repository.VerificationRequestRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.VerificationRequestService;
-import org.springframework.stereotype.Service;
-@Service
 
 public class VerificationRequestServiceImpl
         implements VerificationRequestService {
 
     private final VerificationRequestRepository requestRepo;
-    private final CredentialRecordServiceImpl credentialService;
-    private final VerificationRuleServiceImpl ruleService;
-    private final AuditTrailServiceImpl auditService;
+    private final CredentialRecordRepository credentialRepo;
+    private final VerificationRuleRepository ruleRepo;
+    private final AuditTrailRecordRepository auditRepo;
 
     public VerificationRequestServiceImpl(
             VerificationRequestRepository requestRepo,
@@ -24,9 +22,9 @@ public class VerificationRequestServiceImpl
             AuditTrailServiceImpl auditService) {
 
         this.requestRepo = requestRepo;
-        this.credentialService = credentialService;
-        this.ruleService = ruleService;
-        this.auditService = auditService;
+        this.credentialRepo = credentialService.repository;
+        this.ruleRepo = ruleService.repository;
+        this.auditRepo = auditService.repository;
     }
 
     @Override
@@ -36,27 +34,22 @@ public class VerificationRequestServiceImpl
 
     @Override
     public VerificationRequest processVerification(Long requestId) {
-
         VerificationRequest request =
                 requestRepo.findById(requestId).orElseThrow();
 
-        // Find credential by ID
-        CredentialRecord credential = credentialService.repository
-                .findAll()
-                .stream()
+        CredentialRecord credential = credentialRepo.findAll().stream()
                 .filter(c -> c.getId().equals(request.getCredentialId()))
-                .findFirst()
-                .orElse(null);
+                .findFirst().orElse(null);
 
-        boolean expired = credential != null
-                && credential.getExpiryDate() != null
-                && credential.getExpiryDate().isBefore(LocalDate.now());
+        boolean expired = credential != null &&
+                credential.getExpiryDate() != null &&
+                credential.getExpiryDate().isBefore(LocalDate.now());
 
         request.setStatus(expired ? "FAILED" : "SUCCESS");
 
         AuditTrailRecord audit = new AuditTrailRecord();
         audit.setCredentialId(request.getCredentialId());
-        auditService.logEvent(audit);
+        auditRepo.save(audit);
 
         return requestRepo.save(request);
     }

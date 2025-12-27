@@ -6,13 +6,10 @@ import java.util.List;
 import com.example.demo.entity.CredentialRecord;
 import com.example.demo.repository.CredentialRecordRepository;
 import com.example.demo.service.CredentialRecordService;
-import org.springframework.stereotype.Service;
-@Service
 
 public class CredentialRecordServiceImpl implements CredentialRecordService {
 
-    // 🔑 CHANGED: removed 'private'
-    final CredentialRecordRepository repository;
+    private final CredentialRecordRepository repository;
 
     public CredentialRecordServiceImpl(CredentialRecordRepository repository) {
         this.repository = repository;
