@@ -46,7 +46,7 @@ public class AuthController {
                 saved.getEmail(),
                 saved.getRole());
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return "Registered";
     }
 
     @PostMapping("/login")
