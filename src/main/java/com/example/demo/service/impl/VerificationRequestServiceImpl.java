@@ -41,7 +41,6 @@ public class VerificationRequestServiceImpl implements VerificationRequestServic
         VerificationRequest req =
                 requestRepo.findById(requestId).orElseThrow();
 
-        // 🔥 THIS IS WHAT THE TEST EXPECTS
         CredentialRecord credential = credentialService.findAll()
                 .stream()
                 .filter(c -> c.getId().equals(req.getCredentialId()))
