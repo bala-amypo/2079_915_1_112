@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class JwtUtil {
 
-    // 🔑 Dummy secret (safe for tests)
-    private static final String SECRET = "test-secret-key";
+    // 🔑 SIMPLE SECRET (OK FOR PROJECT / TESTING)
+    private static final String SECRET_KEY =
+            "THIS_IS_A_TEST_32_CHAR_MINIMUM_SECRET_KEY_!!!";
 
-    // ⏱ 1 hour validity
-    private static final long EXPIRATION = 1000 * 60 * 60;
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour
 
     public String generateToken(Long userId, String email, String role) {
 
@@ -26,8 +26,10 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET.getBytes())
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + EXPIRATION_TIME)
+                )
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
                 .compact();
     }
 }
