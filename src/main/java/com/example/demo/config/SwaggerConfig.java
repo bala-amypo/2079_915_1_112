@@ -18,24 +18,16 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
 
         return new OpenAPI()
-
-                // 🔒 DO NOT CHANGE — as requested
                 .servers(List.of(
                         new Server().url("https://9093.408procr.amypo.ai/")
                 ))
-
-                // 📘 API METADATA (SAFE ADDITION)
                 .info(new Info()
                         .title("Digital Credential Verification Engine")
                         .description("Swagger API documentation with JWT support")
                         .version("1.0"))
-
-                // 🔐 GLOBAL JWT SECURITY
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearerAuth")
                 )
-
-                // 🔑 JWT SECURITY SCHEME
                 .components(
                         new Components()
                                 .addSecuritySchemes(

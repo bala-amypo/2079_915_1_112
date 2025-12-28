@@ -68,9 +68,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ===============================
-    // 2️⃣ PROTECTED ENDPOINTS (JWT)
-    // ===============================
     @Bean
     @Order(2)
     public SecurityFilterChain protectedChain(
