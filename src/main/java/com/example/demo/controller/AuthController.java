@@ -29,8 +29,9 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ✅ FIXED: return ResponseEntity
     @PostMapping("/register")
-    public String register(
+    public ResponseEntity<JwtResponse> register(
             @RequestBody RegisterRequest request) {
 
         User user = new User();
@@ -46,9 +47,11 @@ public class AuthController {
                 saved.getEmail(),
                 saved.getRole());
 
-        return "Registered";
+        // ✅ Tests expect getBody()
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    // ✅ login is already correct
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
             @RequestBody LoginRequest request) {
