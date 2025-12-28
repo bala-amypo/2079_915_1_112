@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtResponse> register(
+    public String register(
             @RequestBody RegisterRequest request) {
 
         User user = new User();
