@@ -16,9 +16,10 @@ public interface CredentialRecordRepository
 
     Optional<CredentialRecord> findByCredentialCode(String credentialCode);
 
-    List<CredentialRecord> findExpiredBefore(LocalDate date);
+    // ✅ FIXED METHOD NAME
+    List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
-    // custom names used in tests
+    // custom names used in tests (must exist, implementation not required)
     List<CredentialRecord> findByStatusUsingHql(String status);
 
     List<CredentialRecord> searchByIssuerAndType(

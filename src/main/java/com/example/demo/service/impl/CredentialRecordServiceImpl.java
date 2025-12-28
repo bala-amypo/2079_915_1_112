@@ -6,6 +6,7 @@ import com.example.demo.service.CredentialRecordService;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,7 +48,7 @@ public class CredentialRecordServiceImpl implements CredentialRecordService {
         return repo.findByCredentialCode(code).orElse(null);
     }
 
-    // 🔥 REQUIRED FOR t61 & t62 TESTS
+    @Override
     public List<CredentialRecord> findAll() {
         return repo.findAll();
     }
