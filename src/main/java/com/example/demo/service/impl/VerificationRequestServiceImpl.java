@@ -8,7 +8,9 @@ import com.example.demo.service.VerificationRequestService;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class VerificationRequestServiceImpl implements VerificationRequestService {
 
     private final VerificationRequestRepository requestRepo;
