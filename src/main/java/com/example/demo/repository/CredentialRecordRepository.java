@@ -13,12 +13,24 @@ import java.util.Optional;
 public interface CredentialRecordRepository
         extends JpaRepository<CredentialRecord, Long> {
 
+    // ===============================
+    // BASIC QUERIES
+    // ===============================
     List<CredentialRecord> findByHolderId(Long holderId);
 
     Optional<CredentialRecord> findByCredentialCode(String credentialCode);
 
+    // ===============================
+    // 🔥 REQUIRED BY TESTS (DO NOT RENAME)
+    // ===============================
+    List<CredentialRecord> findExpiredBefore(LocalDate date);
+
+    // (Optional but safe to keep)
     List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
+    // ===============================
+    // HQL / JPQL QUERIES
+    // ===============================
     @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
     List<CredentialRecord> findByStatusUsingHql(String status);
 
