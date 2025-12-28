@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.CredentialRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -16,12 +17,18 @@ public interface CredentialRecordRepository
 
     Optional<CredentialRecord> findByCredentialCode(String credentialCode);
 
-    // ✅ FIXED METHOD NAME
     List<CredentialRecord> findByExpiryDateBefore(LocalDate date);
 
-    // custom names used in tests (must exist, implementation not required)
+    @Query("SELECT c FROM CredentialRecord c WHERE c.status = :status")
     List<CredentialRecord> findByStatusUsingHql(String status);
 
+    @Query("""
+           SELECT c FROM CredentialRecord c
+           WHERE c.issuer = :issuer
+             AND c.credentialType = :credentialType
+           """)
     List<CredentialRecord> searchByIssuerAndType(
-            String issuer, String credentialType);
+            String issuer,
+            String credentialType
+    );
 }
