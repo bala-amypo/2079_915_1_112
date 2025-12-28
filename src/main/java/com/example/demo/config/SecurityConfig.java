@@ -18,10 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    // ===============================
-    // COMMON BEANS
-    // ===============================
-
     @Bean
     public JwtUtil jwtUtil() {
         return new JwtUtil();
@@ -51,10 +47,6 @@ public class SecurityConfig {
             AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
-    // ===============================
-    // 1️⃣ PUBLIC ENDPOINTS (NO AUTH)
-    // ===============================
     @Bean
     @Order(1)
     public SecurityFilterChain publicChain(HttpSecurity http) throws Exception {
