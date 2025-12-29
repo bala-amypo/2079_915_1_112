@@ -10,15 +10,11 @@ import java.util.Map;
 
 public class JwtUtil {
 
-    // 🔑 SECRET KEY (OK FOR PROJECT / TESTING)
     private static final String SECRET_KEY =
             "THIS_IS_A_TEST_32_CHAR_MINIMUM_SECRET_KEY_!!!";
 
-    private static final long EXPIRATION_TIME = 60 * 60 * 1000; // 1 hour
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000; 
 
-    // ===============================
-    // TOKEN GENERATION
-    // ===============================
     public String generateToken(Long userId, String email, String role) {
 
         Map<String, Object> claims = new HashMap<>();
@@ -28,7 +24,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(email)               // 👈 email = username
+                .setSubject(email)               
                 .setIssuedAt(new Date())
                 .setExpiration(
                         new Date(System.currentTimeMillis() + EXPIRATION_TIME)
@@ -39,10 +35,6 @@ public class JwtUtil {
                 )
                 .compact();
     }
-
-    // ===============================
-    // TOKEN VALIDATION
-    // ===============================
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -54,23 +46,14 @@ public class JwtUtil {
         }
     }
 
-    // ===============================
-    // EXTRACT EMAIL (SUBJECT)
-    // ===============================
     public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    // ===============================
-    // OPTIONAL: EXTRACT ROLE
-    // ===============================
     public String extractRole(String token) {
         return extractAllClaims(token).get("role", String.class);
     }
 
-    // ===============================
-    // INTERNAL: READ CLAIMS
-    // ===============================
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY.getBytes())
