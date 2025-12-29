@@ -16,58 +16,59 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+        private final AuthenticationManager authenticationManager;
+            private final JwtUtil jwtUtil;
 
-    public AuthController(
-            UserService userService,
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil) {
+                public AuthController(
+                            UserService userService,
+                                        AuthenticationManager authenticationManager,
+                                                    JwtUtil jwtUtil) {
 
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-    }
+                                                            this.userService = userService;
+                                                                    this.authenticationManager = authenticationManager;
+                                                                            this.jwtUtil = jwtUtil;
+                                                                                }
 
-    // ✅ FIXED: return ResponseEntity
-    @PostMapping("/register")
-    public ResponseEntity<JwtResponse> register(
-            @RequestBody RegisterRequest request) {
+                                                                                    // ✅ FIXED: return ResponseEntity
+                                                                                        @PostMapping("/register")
+                                                                                            public ResponseEntity<JwtResponse> register(
+                                                                                                        @RequestBody RegisterRequest request) {
 
-        User user = new User();
-        user.setFullName(request.getFullName());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
+                                                                                                                User user = new User();
+                                                                                                                        user.setFullName(request.getFullName());
+                                                                                                                                user.setEmail(request.getEmail());
+                                                                                                                                        user.setPassword(request.getPassword());
+                                                                                                                                                user.setRole(request.getRole());
 
-        User saved = userService.registerUser(user);
+                                                                                                                                                        User saved = userService.registerUser(user);
 
-        String token = jwtUtil.generateToken(
-                saved.getId(),
-                saved.getEmail(),
-                saved.getRole());
+                                                                                                                                                                String token = jwtUtil.generateToken(
+                                                                                                                                                                                saved.getId(),
+                                                                                                                                                                                                saved.getEmail(),
+                                                                                                                                                                                                                saved.getRole());
 
-        // ✅ Tests expect getBody()
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
+                                                                                                                                                                                                                        // ✅ Tests expect getBody()
+                                                                                                                                                                                                                                return ResponseEntity.ok(new JwtResponse(token));
+                                                                                                                                                                                                                                    }
 
-    // ✅ login is already correct
-    @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(
-            @RequestBody LoginRequest request) {
+                                                                                                                                                                                                                                        // ✅ login is already correct
+                                                                                                                                                                                                                                            @PostMapping("/login")
+                                                                                                                                                                                                                                                public ResponseEntity<JwtResponse> login(
+                                                                                                                                                                                                                                                            @RequestBody LoginRequest request) {
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()));
+                                                                                                                                                                                                                                                                    authenticationManager.authenticate(
+                                                                                                                                                                                                                                                                                    new UsernamePasswordAuthenticationToken(
+                                                                                                                                                                                                                                                                                                            request.getEmail(),
+                                                                                                                                                                                                                                                                                                                                    request.getPassword()));
 
-        User user = userService.findByEmail(request.getEmail());
+                                                                                                                                                                                                                                                                                                                                            User user = userService.findByEmail(request.getEmail());
 
-        String token = jwtUtil.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole());
+                                                                                                                                                                                                                                                                                                                                                    String token = jwtUtil.generateToken(
+                                                                                                                                                                                                                                                                                                                                                                    user.getId(),
+                                                                                                                                                                                                                                                                                                                                                                                    user.getEmail(),
+                                                                                                                                                                                                                                                                                                                                                                                                    user.getRole());
 
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-}
+                                                                                                                                                                                                                                                                                                                                                                                                            return ResponseEntity.ok(new JwtResponse(token));
+                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                
