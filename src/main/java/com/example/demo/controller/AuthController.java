@@ -29,7 +29,6 @@ public class AuthController {
                                                                             this.jwtUtil = jwtUtil;
                                                                                 }
 
-                                                                                    // ✅ FIXED: return ResponseEntity
                                                                                         @PostMapping("/register")
                                                                                             public ResponseEntity<JwtResponse> register(
                                                                                                         @RequestBody RegisterRequest request) {
@@ -46,12 +45,10 @@ public class AuthController {
                                                                                                                                                                                 saved.getId(),
                                                                                                                                                                                                 saved.getEmail(),
                                                                                                                                                                                                                 saved.getRole());
-
-                                                                                                                                                                                                                        // ✅ Tests expect getBody()
                                                                                                                                                                                                                                 return ResponseEntity.ok(new JwtResponse(token));
                                                                                                                                                                                                                                     }
 
-                                                                                                                                                                                                                                        // ✅ login is already correct
+                                                                                                                                                                                                                                
                                                                                                                                                                                                                                             @PostMapping("/login")
                                                                                                                                                                                                                                                 public ResponseEntity<JwtResponse> login(
                                                                                                                                                                                                                                                             @RequestBody LoginRequest request) {
